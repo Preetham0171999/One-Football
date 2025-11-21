@@ -1,0 +1,124 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background: #0b0f1a;
+  color: white;
+}
+
+/* Bigger responsive container */
+.selector-container {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+/* Heading */
+.selector-container h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+/* Dropdown */
+.team-dropdown {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+}
+
+.team-dropdown option {
+  color: black;
+}
+
+/* Team info layout */
+.team-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Left section (players list) */
+.team-left {
+  width: 100%;
+}
+/* Player list */
+.player-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.player-list li {
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Rating */
+.rating {
+  font-weight: bold;
+  color: #ffcc33;
+}
+
+/* Right section (team logo) */
+.team-logo-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.team-logo {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(255,255,255,0.2);
+  font-weight: bold;
+  color: #ffffffcc;
+}
+
+.player-name, .player-position, .player-rating {
+  flex: 1;
+}
+
+.player-rating {
+  text-align: right;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .team-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .team-logo {
+    width: 150px;
+    height: 150px;
+  }
+}

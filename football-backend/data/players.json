@@ -1,0 +1,51 @@
+
+{
+  "Barcelona": [
+    {
+      "name": "Lamine Yamal",
+      "position": "Forward",
+      "rating": 85
+    },
+    {
+      "name": "Raphinha",
+      "position": "Forward",
+      "rating": 84
+    },
+    {
+      "name": "Robert Lewandowski",
+      "position": "Forward",
+      "rating": 90
+    },
+    {
+      "name": "Pedri",
+      "position": "Midfielder",
+      "rating": 88
+    },
+    {
+      "name": "Fermín López",
+      "position": "Midfielder",
+      "rating": 80
+    },
+    {
+      "name": "Gavi",
+      "position": "Midfielder",
+      "rating": 86
+    },
+    {
+      "name": "Ronald Araújo",
+      "position": "Defender",
+      "rating": 86
+    },
+    {
+      "name": "Alejandro Balde",
+      "position": "Defender",
+      "rating": 82
+    },
+    {
+      "name": "Ferran Torres",
+      "position": "Forward",
+      "rating": 83
+    }
+  ]
+}
+
