@@ -8,14 +8,16 @@ body {
 
 /* Bigger responsive container */
 .selector-container {
-  max-width: 800px;
+  max-width: 500px;
   margin: 3rem auto;
   padding: 2rem;
   background: rgba(255, 255, 255, 0.06);
   border-radius: 15px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
+
+
+
 /* Heading */
 .selector-container h2 {
   margin-bottom: 1.5rem;
@@ -77,11 +79,12 @@ body {
 }
 
 /* Right section (team logo) */
-.team-logo-box {
+/* .team-logo-box {
   display: flex;
   justify-content: center;
   align-items: center;
-}
+} */
+
 
 .team-logo {
   width: 180px;
@@ -110,6 +113,193 @@ body {
   font-weight: bold;
 }
 
+.team-logo-right {
+  position: fixed;
+  right: 240px;
+  top: 100px;
+  width: 250px;
+  height: auto;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+  animation: pulseGlow 3s infinite ease-in-out;
+  transition: transform 0.3s ease;
+  z-index: 9999;
+}
+
+@keyframes pulseGlow {
+  0% {
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(255,255,255,0.8));
+  }
+  100% {
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+  }
+}
+
+/* Left-side fixed metrics box */
+.club-stats-left {
+  position: fixed;
+  left: 40px; /* distance from left edge */
+  top: 50px; /* align vertically similar to logo */
+  width: 500px; /* adjust width as needed */
+  background: rgba(0, 0, 0, 0.6); /* semi-transparent dark */
+  padding: 1.5rem;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: white;
+  font-family: "Poppins", sans-serif;
+  z-index: 9999;
+}
+
+/* Metrics list */
+.metric-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.metric-list li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.metric-name {
+  font-weight: 500;
+  flex: 1;
+}
+
+.metric-value {
+  font-weight: bold;
+  color: #ffd700; /* gold accent */
+  text-align: right;
+}
+
+/* Right-bottom fixed history box */
+/* 📌 Right-Bottom History Box */
+.club-history-right {
+  position: fixed;
+  right: 1300px;
+  bottom: 70px;
+  width: 500px; /* wider for readability */
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1.5rem;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: white;
+  font-family: "Poppins", sans-serif;
+  z-index: 9999;
+}
+
+/* 📌 History List */
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.history-list li {
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Category (small, subdued) */
+.history-category {
+  font-weight: 500;
+  flex: 1;
+}
+
+/* Honour (Primary highlight — strong gold) */
+.history-honour {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 2px;
+  color: #ffd700;
+}
+
+/* Total wins (small white) */
+.history-total {
+  font-weight: 500;
+  flex: 1;
+  color: #ffffffcc;
+}
+.history-list li {
+  display: flex;
+  gap: 20px; /* spacing between columns */
+}
+
+.history-category { width: 120px; }
+.history-honour   { width: 160px; }
+.history-total    { width: 80px;  }
+
+
+.kick-in-ball {
+  position: fixed;
+  bottom: 30px;
+  right: -60px;
+  width: 200px;
+  height: 200px;
+
+  background-image: url('/football-bg.jpg');
+  background-size: cover;
+  background-position: center;
+
+  border-radius: 70%;      /* makes it a perfect circle */
+  overflow: hidden;
+  clip-path: circle(80%);        /* hides the corners */
+  
+  z-index: 9999;
+  animation: kickBall 1.6s ease-out forwards;
+}
+
+
+
+@keyframes lightsBlink {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
+
+@keyframes kickBall {
+  0% { 
+    right: -80px; 
+    bottom: 0px;
+    transform: rotate(0deg) scale(0.6);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+    transform: rotate(180deg) scale(1);
+  }
+
+  60% {
+    bottom: 80px; /* jump arc */
+    transform: rotate(360deg) scale(1.05);
+  }
+
+  100% { 
+    right: 20px; 
+    bottom: 30px;
+    transform: rotate(540deg) scale(1);
+    opacity: 1;
+  }
+}
+
+
+
+
+
+
+
+
+
 /* Responsive */
 @media (max-width: 768px) {
   .team-info {
@@ -121,4 +311,12 @@ body {
     width: 150px;
     height: 150px;
   }
+
+
+
+
+
+
+
+
 }

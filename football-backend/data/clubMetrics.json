@@ -1,0 +1,31 @@
+{
+  "Barcelona": [
+    { "metric": "Club Valuation (2025)", "value": "$5.65 Billion" },
+    { "metric": "Total Revenue (2024/25)", "value": "€994 Million (~$1.07B)" },
+    { "metric": "Net Result (2024/25)", "value": "-€17 Million Net Loss" },
+    { "metric": "Total Debt (2024/25)", "value": "€469 Million" },
+    { "metric": "Wage Bill", "value": "54% of Ordinary Revenue" },
+    { "metric": "Stadium", "value": "Spotify Camp Nou (Reconstruction)" },
+    { "metric": "Total Squad Market Value", "value": "€1.11 Billion" }
+  ],
+
+  "Manchester United": [
+    { "metric": "Club Valuation (2025)", "value": "$6.00 Billion" },
+    { "metric": "Total Revenue (2024/25)", "value": "$720 Million" },
+    { "metric": "Net Result (2024/25)", "value": "$30 Million Profit" },
+    { "metric": "Total Debt (2024/25)", "value": "$620 Million" },
+    { "metric": "Wage Bill", "value": "65% of Revenue" },
+    { "metric": "Stadium", "value": "Old Trafford" },
+    { "metric": "Total Squad Market Value", "value": "€930 Million" }
+  ],
+
+  "Real Madrid": [
+    { "metric": "Club Valuation (2025)", "value": "$6.6 Billion" },
+    { "metric": "Total Revenue (2024/25)", "value": "€990 Million" },
+    { "metric": "Net Result (2024/25)", "value": "€12 Million Profit" },
+    { "metric": "Total Debt (2024/25)", "value": "€310 Million" },
+    { "metric": "Wage Bill", "value": "52% of Revenue" },
+    { "metric": "Stadium", "value": "Santiago Bernabéu" },
+    { "metric": "Total Squad Market Value", "value": "€1.15 Billion" }
+  ]
+}
