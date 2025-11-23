@@ -36,6 +36,7 @@ players_data = load_json("players.json")
 logos_data = load_json("logos.json")
 ratings_data = load_json("playerRatings.json") 
 metrics_data = load_json("clubMetrics.json")
+teamdata_file = "data/teamdata.json"
 
 
 
@@ -90,3 +91,18 @@ def get_club_history(team_name: str):
 def get_rating(player_name: str):
     # later fetch dynamic ratings from real APIs
     return {"player": player_name, "rating": 80}  # static for now
+
+
+
+with open(teamdata_file) as f:
+    teamdata = json.load(f)
+
+
+@app.get("/team-info/{team_name}")
+def get_team_info(team_name: str):
+    team_name_lower = team_name.lower()
+
+    if team_name_lower in teamdata:
+        return teamdata[team_name_lower]
+    return {}
+

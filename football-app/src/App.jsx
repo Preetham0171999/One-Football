@@ -1,18 +1,16 @@
 import React from "react";
-import TeamSelector from "./components/TeamSelector";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-function ErrorBoundary({ children }) {
-  return (
-    <React.StrictMode>
-      {children}
-    </React.StrictMode>
-  );
-}
+import TeamSelector from "./components/TeamSelector";
+import TeamBuilder from "./components/TeamBuilder";
 
 export default function App() {
   return (
-    <ErrorBoundary>
-      <TeamSelector />
-    </ErrorBoundary>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<TeamSelector />} />
+        <Route path="/build-team" element={<TeamBuilder />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

@@ -114,7 +114,7 @@ body {
 }
 
 .team-logo-right {
-  position: fixed;
+  position: absolute;
   right: 240px;
   top: 100px;
   width: 250px;
@@ -290,6 +290,56 @@ body {
     transform: rotate(540deg) scale(1);
     opacity: 1;
   }
+}
+.more-info-box {
+  position: fixed;
+  right: 40px;
+  bottom: 140px;
+  width: 350px;
+  background: rgba(0,0,0,0.6);
+  padding: 1.5rem;
+  border-radius: 12px;
+  color: white;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  z-index: 9999;
+}
+
+.more-info-btn {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  background: #ffd700;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.more-info-btn:hover {
+  background: #ffea69;
+  transform: scale(1.05);
+}
+
+/* Collapsible content */
+.more-info-content {
+  margin-top: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+  animation: slideDown 0.4s ease forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.more-info-content h3,
+.more-info-content h4 {
+  margin-bottom: 0.5rem;
+  color: #ffd700;
 }
 
 

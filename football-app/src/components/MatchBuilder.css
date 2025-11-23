@@ -1,0 +1,58 @@
+.match-builder-container {
+  text-align: center;
+  padding: 30px;
+  font-family: "Poppins", sans-serif;
+  color: white;
+}
+
+.match-select-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 80px;
+  margin-top: 40px;
+}
+
+.team-column {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 20px 30px;
+  border-radius: 12px;
+  width: 260px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.team-dropdown {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.team-name {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.team-logo {
+  margin-top: 10px;
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+}
+
+.vs-box {
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+
+.start-match-btn {
+  margin-top: 50px;
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  background: #ffd700;
+  color: black;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}

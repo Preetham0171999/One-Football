@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-// import "./index.css"; 
+
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+
+
+
 
  
 
@@ -7,12 +13,48 @@ import React, { useState, useEffect } from "react";
 
 
 export default function TeamSelector() {
+  const navigate = useNavigate();
+
+  const goToBuilder = () => {
+    navigate("/build-team");
+  };
+
+
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState("");
   const [players, setPlayers] = useState([]);
   const [logo, setLogo] = useState("");
   const [metrics, setMetrics] = useState([]);
   const [history, setHistory] = useState([]);
+
+  const [teamInfo, setTeamInfo] = useState({});
+  const [showMoreInfo, setShowMoreInfo] = useState(false);
+
+useEffect(() => {
+  if (!selectedTeam) return;
+
+  fetch(`http://localhost:8000/team-info/${selectedTeam}`)
+    .then(res => res.json())
+    .then(data => setTeamInfo(data));
+}, [selectedTeam]);
+
+
+
+const [moreInfoVisible, setMoreInfoVisible] = useState(false);
+
+
+const hideMoreInfo = () => {
+  setMoreInfoVisible(false);
+};
+
+useEffect(() => {
+  if (!selectedTeam) return;
+
+  fetch(`http://localhost:8000/team-info/${selectedTeam}`)
+    .then(res => res.json())
+    .then(data => setTeamInfo(data));
+}, [selectedTeam]);
+
 
 
 
@@ -76,6 +118,35 @@ useEffect(() => {
 return (
   <>
 <div className="kick-in-ball"></div>
+
+
+
+
+{selectedTeam && (
+  <div className="more-info-box">
+    <button 
+      className="more-info-btn" 
+      onClick={goToBuilder}
+    >
+      {showMoreInfo ? "Hide Info" : "Build Team"}
+    </button>
+
+    {/* Collapsible content */}
+    {showMoreInfo && (
+      <div className="more-info-content">
+        <h3>More About {selectedTeam}</h3>
+        <p>{teamData.description}</p>
+
+        <h4>Fun Facts</h4>
+        <ul>
+          {teamData.fun_facts.map((fact, idx) => (
+            <li key={idx}>{fact}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+)}
 
 
 

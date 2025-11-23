@@ -1,0 +1,140 @@
+.team-builder-container {
+  padding: 2rem;
+  color: white;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.formation-box select {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+}
+
+/* Football pitch layout */
+.pitch-container {
+  position: relative;
+  width: 720px;
+  height: 900px;
+  margin: 0;                /* ← removes auto-centering gap */
+  background: green;
+  border: 4px solid white;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+
+/* Center Line */
+.center-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: white;
+  transform: translateY(-50%);
+}
+
+/* Center Circle */
+.center-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20%;
+  height: 20%;
+  border: 4px solid white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* TOP penalty box */
+.penalty-box.top {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  width: 55%;
+  height: 20%;
+  border: 4px solid white;
+  border-bottom: none;
+  transform: translateX(-50%);
+}
+
+/* BOTTOM penalty box */
+.penalty-box.bottom {
+  position: absolute;
+  bottom: 80%;
+  left: 50%;
+  width: 55%;
+  height: 20%;
+  border: 4px solid white;
+  border-top: none;
+  transform: translateX(-50%);
+}
+
+/* Player circles */
+.player-dot {
+  position: absolute;
+  transform: none;
+  width: 18px;
+  height: 18px;
+  background: #ffd700;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.player-pool {
+  margin-top: 20px;
+  background: rgba(255,255,255,0.1);
+  padding: 10px 15px;
+  border-radius: 8px;
+  width: 200px;
+}
+
+.player-pool ul {
+  list-style: none;
+  padding: 0;
+}
+
+.draggable-player {
+  padding: 8px;
+  margin-bottom: 6px;
+  background: #ffffff33;
+  border-radius: 6px;
+  cursor: grab;
+  color: white;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.draggable-player:hover {
+  background: #ffffff55;
+}
+
+.player-list-box {
+  display: flex;
+  flex-direction: column;   /* ← MAKE VERTICAL */
+  gap: 10px;
+  width: 220px;             /* fixed width for left panel */
+  padding: 10px;
+  background: #ffffff22;    /* slight transparent box */
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+}
+
+
+.draggable-player {
+  padding: 8px 12px;
+  background: white;
+  color: black;
+  border-radius: 6px;
+  cursor: grab;
+  font-weight: bold;
+}
+
+
