@@ -39,6 +39,30 @@ const formations = {
   "4-2-3-1": { defense: 4, midfield: 2, attack: 3 },
 };
 
+const formationRoles = getFormationCoordinates(formation).map((p, idx) => {
+  if (idx < formations[formation].defense) return "defense";
+  if (idx < formations[formation].defense + formations[formation].midfield) return "midfield";
+  if (idx < formations[formation].defense + formations[formation].midfield + formations[formation].attack) 
+    return "attack";
+  return "goalkeeper";
+});
+
+
+function normalizePosition(pos) {
+  if (!pos) return "";
+
+  pos = pos.toLowerCase();
+
+  if (pos.includes("defender")) return "defense";
+  if (pos.includes("midfielder")) return "midfield";
+  if (pos.includes("forward") || pos.includes("striker")) return "attack";
+  if (pos.includes("goalkeeper") || pos.includes("keeper")) return "goalkeeper";
+
+  return pos;
+}
+
+
+
 // Rating modifier based on natural vs assigned position
 // const getAdjustedRating = (player, assignedPos) => {
 //   if (!player || !assignedPos) return 0;
@@ -55,45 +79,17 @@ const formations = {
 
 
 const getAdjustedRating = (player, assignedPos) => {
-  console.log(
-    "%c[CHECK] Calculating rating...",
-    "color: orange; font-weight: bold;"
-  );
-  console.log("Player:", player);
-  console.log("Assigned Position:", assignedPos);
-
-  if (!player || !player.position || !player.rating) {
-    console.warn("[WARN] Missing player data:", player);
-    return 0;
-  }
-
-  const actual = player.position.toLowerCase();
+  const actual = normalizePosition(player.position);
   const assigned = assignedPos.toLowerCase();
+
   let adjusted = player.rating;
 
-  // defender playing midfield or attack
-  if (actual === "defense" && assigned !== "defense") {
+  if (actual !== assigned && assigned !== "goalkeeper") {
     adjusted *= 0.8;
   }
-
-  // midfield playing defense or attack
-  if (actual === "midfield" && assigned !== "midfield") {
-    adjusted *= 0.8;
-  }
-
-  // attack playing defense or midfield
-  if (actual === "attack" && assigned !== "attack") {
-    adjusted *= 0.8;
-  }
-
-  console.log(
-    `%cAdjusted Rating: ${adjusted}`,
-    "color: lightgreen; font-weight:bold;"
-  );
 
   return adjusted;
 };
-
 
 const TeamBuilder = () => {
   const [selectedFormation, setSelectedFormation] = useState("4-3-3");
@@ -190,29 +186,30 @@ useEffect(() => {
   let count = 0;
 
   Object.entries(team).forEach(([assignedPos, players]) => {
-    console.log(`➡️ Checking assigned position: ${assignedPos}`, players);
-
     players.forEach((player) => {
-      console.log("   🎯 Player inside team:", player);
-
-      const adjusted = getAdjustedRating(player, assignedPos);
-      console.log(
-        `   ⭐ Adjusted rating for ${player.name} (actual: ${player.position}, assigned: ${assignedPos}) = ${adjusted}`
-      );
-
-      total += adjusted;
+      total += getAdjustedRating(player, assignedPos);
       count++;
     });
   });
 
-  console.log("📊 Total Rating:", total, "Players Count:", count);
-
-  const avg = count > 0 ? (total / count).toFixed(2) : 0;
-
-  console.log("✅ FINAL AVERAGE RATING:", avg);
-
-  setAverageRating(avg);
+  setAverageRating(count > 0 ? (total / count).toFixed(2) : 0);
 }, [team]);
+
+
+useEffect(() => {
+  const newTeam = { defense: [], midfield: [], attack: [], goalkeeper: [] };
+
+  Object.entries(assigned).forEach(([slotIndex, playerName]) => {
+    const role = formationRoles[slotIndex];
+    const playerObj = [...players, ...allPlayers].find(p => p.name === playerName);
+
+    if (playerObj) newTeam[role].push(playerObj);
+  });
+
+  setTeam(newTeam);
+}, [assigned, formation]);
+
+
 
 
 
