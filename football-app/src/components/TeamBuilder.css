@@ -127,6 +127,16 @@
   backdrop-filter: blur(6px);
 }
 
+.builder-layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+
 
 .draggable-player {
   padding: 8px 12px;
@@ -136,5 +146,36 @@
   cursor: grab;
   font-weight: bold;
 }
+
+
+.player-dot-wrapper {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.player-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.player-info-card {
+  position: absolute;
+  bottom: 30px;        /* lifts above the dot */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+
+
 
 

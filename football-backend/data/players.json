@@ -2,6 +2,96 @@
 {
   "Barcelona": [
     {
+      "name": "Marc-André ter Stegen",
+      "position": "Goalkeeper",
+      "rating": 89
+    },
+    {
+      "name": "Iñaki Peña",
+      "position": "Goalkeeper",
+      "rating": 78
+    },
+    {
+      "name": "Ronald Araújo",
+      "position": "Defender",
+      "rating": 86
+    },
+    {
+      "name": "Jules Koundé",
+      "position": "Defender",
+      "rating": 85
+    },
+    {
+      "name": "Andreas Christensen",
+      "position": "Defender",
+      "rating": 83
+    },
+    {
+      "name": "Alejandro Balde",
+      "position": "Defender",
+      "rating": 84
+    },
+    {
+      "name": "Pau Cubarsí",
+      "position": "Defender",
+      "rating": 81
+    },
+    {
+      "name": "Eric García",
+      "position": "Defender",
+      "rating": 79
+    },
+    {
+      "name": "Marcos Alonso",
+      "position": "Defender",
+      "rating": 77
+    },
+    {
+      "name": "Sergi Roberto",
+      "position": "Defender/Midfielder",
+      "rating": 79
+    },
+    {
+      "name": "Pedri",
+      "position": "Midfielder",
+      "rating": 88
+    },
+    {
+      "name": "Frenkie de Jong",
+      "position": "Midfielder",
+      "rating": 87
+    },
+    {
+      "name": "Gavi",
+      "position": "Midfielder",
+      "rating": 86
+    },
+    {
+      "name": "Oriol Romeu",
+      "position": "Midfielder",
+      "rating": 79
+    },
+    {
+      "name": "Ilkay Gündoğan",
+      "position": "Midfielder",
+      "rating": 85
+    },
+    {
+      "name": "Fermín López",
+      "position": "Midfielder",
+      "rating": 81
+    },
+    {
+      "name": "Marc Casadó",
+      "position": "Midfielder",
+      "rating": 73
+    },
+    {
+      "name": "Robert Lewandowski",
+      "position": "Forward",
+      "rating": 90
+    },
+    {
       "name": "Lamine Yamal",
       "position": "Forward",
       "rating": 85
@@ -12,39 +102,39 @@
       "rating": 84
     },
     {
-      "name": "Robert Lewandowski",
-      "position": "Forward",
-      "rating": 90
-    },
-    {
-      "name": "Pedri",
-      "position": "Midfielder",
-      "rating": 88
-    },
-    {
-      "name": "Fermín López",
-      "position": "Midfielder",
-      "rating": 80
-    },
-    {
-      "name": "Gavi",
-      "position": "Midfielder",
-      "rating": 86
-    },
-    {
-      "name": "Ronald Araújo",
-      "position": "Defender",
-      "rating": 86
-    },
-    {
-      "name": "Alejandro Balde",
-      "position": "Defender",
-      "rating": 82
-    },
-    {
       "name": "Ferran Torres",
       "position": "Forward",
       "rating": 83
+    },
+    {
+      "name": "João Félix",
+      "position": "Forward",
+      "rating": 84
+    },
+    {
+      "name": "Ansu Fati",
+      "position": "Forward",
+      "rating": 79
+    },
+    {
+      "name": "Ousmane Dembélé",
+      "position": "Forward (Previous Season)",
+      "rating": 86
+    },
+    {
+      "name": "Sergio Busquets",
+      "position": "Midfielder (Previous Season)",
+      "rating": 83
+    },
+    {
+      "name": "Jordi Alba",
+      "position": "Defender (Previous Season)",
+      "rating": 82
+    },
+    {
+      "name": "Gerard Piqué",
+      "position": "Defender (Retired/Previous Season)",
+      "rating": 80
     }
   ]
 }
