@@ -1,6 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { handleDragStart, createHandleDrop } from "../utils/dragUtils";
 import Pitch from "./Pitch";
+import LineupControls from "../components/LineupControls";
+import PlayerList from "../components/PlayerList";
+
+
+
 
 
 
@@ -153,7 +158,8 @@ function getFormationCoordinates(f) {
   ];
 }
 
-const formationPoints = getFormationCoordinates(formation);
+const formationPoints = useMemo(() => getFormationCoordinates(formation), [formation]);
+
 
   const handleDrop = createHandleDrop({
     formationPoints,
@@ -284,34 +290,14 @@ return (
 </div>
 
 
-    {/* TEAM DROPDOWN */}
-    <div className="selector-container">
-      <h2>Select Your Football Team ⚽</h2>
-
-      <select
-        value={selectedTeam}
-        onChange={(e) => setSelectedTeam(e.target.value)}
-        className="team-dropdown"
-      >
-        <option value="">-- Select Team --</option>
-        {teams.map((team, idx) => (
-          <option key={idx} value={team}>{team}</option>
-        ))}
-      </select>
-    </div>
-
-    {/* FORMATION SELECTOR */}
-<div className="formation-box">
-  <label>Select Formation:</label>
-  <select
-    value={formation}
-    onChange={(e) => setFormation(e.target.value)}
-  >
-    {Object.keys(formations).map((f) => (
-      <option key={f} value={f}>{f}</option>
-    ))}
-  </select>
-</div>
+<LineupControls
+  selectedTeam={selectedTeam}
+  teams={teams}
+  formation={formation}
+  formations={formations}
+  setSelectedTeam={setSelectedTeam}
+  setFormation={setFormation}
+/>
 
 
     {/* TEAM LOGO */}
@@ -349,18 +335,8 @@ return (
     <div className="builder-layout">
 
       {/* PLAYER LIST */}
-      <div className="player-list-box">
-        {players.map((player, idx) => (
-          <div
-  className="draggable-player"
-  draggable
-  onDragStart={(e) => handleDragStart(e, player)}
->
-  {player.name} ({player.position}) ⭐{player.rating}
-</div>
 
-        ))}
-      </div>
+<PlayerList players={players} />
 <Pitch
   formationPoints={formationPoints}
   assigned={assigned}
