@@ -1,4 +1,10 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { handleDragStart, createHandleDrop } from "../utils/dragUtils";
+import Pitch from "./Pitch";
+
+
+
+
 import "./TeamBuilder.css";
 
 export default function TeamBuilder() {
@@ -46,6 +52,7 @@ const formationRoles = getFormationCoordinates(formation).map((p, idx) => {
     return "attack";
   return "goalkeeper";
 });
+
 
 
 function normalizePosition(pos) {
@@ -96,12 +103,10 @@ const TeamBuilder = () => {
   const [team, setTeam] = useState({});
   const [averageRating, setAverageRating] = useState(0);
 
-  const formations = {
-    "4-3-3": { defense: 4, midfield: 3, attack: 3 },
-    "4-4-2": { defense: 4, midfield: 4, attack: 2 },
-    "3-5-2": { defense: 3, midfield: 5, attack: 2 },
-    "4-2-3-1": { defense: 4, midfield: 2, attack: 3 },
-  };
+
+
+    // 👇 THIS is what "inside component" means
+
 
   useEffect(() => {
     if (team && Object.keys(team).length > 0) {
@@ -150,27 +155,15 @@ function getFormationCoordinates(f) {
 
 const formationPoints = getFormationCoordinates(formation);
 
+  const handleDrop = createHandleDrop({
+    formationPoints,
+    setAssigned,
+    setPlayers
+  });
 
-// ----------------------------------------------------
-// TEAM RATING CALCULATION
-// ----------------------------------------------------
-// useEffect(() => {
-//   if (team && Object.keys(team).length > 0) {
-//     let total = 0;
-//     let count = 0;
 
-//     Object.entries(team).forEach(([assignedPos, players]) => {
-//       players.forEach((player) => {
-//         total += getAdjustedRating(player, assignedPos);
-//         count++;
-//       });
-//     });
 
-//     setAverageRating(count > 0 ? (total / count).toFixed(2) : 0);
-//   }
-// }, [team]);
 
-//waste debugging
 
 // TEAM RATING CALCULATION
 // ----------------------------------------------------
@@ -272,46 +265,6 @@ useEffect(() => {
 }, [selectedTeam]);
 
 
-// ----------------------------------------------------
-// DRAG + DROP
-// ----------------------------------------------------
-function handleDragStart(e, player) {
-  e.dataTransfer.setData("player", JSON.stringify(player));
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  const player = JSON.parse(e.dataTransfer.getData("player"));
-
-  const pitch = document.querySelector(".pitch-container");
-  const rect = pitch.getBoundingClientRect();
-
-  const dropX = ((e.clientX - rect.left) / rect.width) * 100;
-  const dropY = ((e.clientY - rect.top) / rect.height) * 100;
-
-  let closestIndex = null;
-  let smallestDist = Infinity;
-
-  formationPoints.forEach((p, index) => {
-    const dx = p.xPercent - dropX;
-    const dy = p.yPercent - dropY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < smallestDist) {
-      smallestDist = dist;
-      closestIndex = index;
-    }
-  });
-
-  // Assign player to pitch
-  setAssigned(prev => ({
-    ...prev,
-    [closestIndex]: player.name
-  }));
-
-  // Remove from list
-  setPlayers(prev => prev.filter(p => p.name !== player.name));
-}
-
 
 
 
@@ -399,62 +352,24 @@ return (
       <div className="player-list-box">
         {players.map((player, idx) => (
           <div
-            key={idx}
-            draggable
-            className="draggable-player"
-            onDragStart={(e) => handleDragStart(e, player)}
-          >
-            {player.name} ({player.position}) ⭐{player.rating}
-          </div>
+  className="draggable-player"
+  draggable
+  onDragStart={(e) => handleDragStart(e, player)}
+>
+  {player.name} ({player.position}) ⭐{player.rating}
+</div>
+
         ))}
       </div>
+<Pitch
+  formationPoints={formationPoints}
+  assigned={assigned}
+  players={players}
+  allPlayers={allPlayers}
+  handleDrop={handleDrop}
+/>
 
-      {/* FOOTBALL PITCH */}
-      <div
-        className="pitch-container"
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={handleDrop}
-      >
-        {/* Pitch lines */}
-        <div className="penalty-box top"></div>
-        <div className="center-line"></div>
-        <div className="center-circle"></div>
-        <div className="penalty-box bottom"></div>
-
-        {/* Formation markers */}
-        {formationPoints.map((p, index) => {
-  const playerName = assigned[index];
-  const playerObj = players.concat(allPlayers).find(pl => pl.name === playerName);
-
-  return (
-    <div
-      key={index}
-      className="player-dot-wrapper"
-      style={{
-        left: p.xPercent + "%",
-        top: p.yPercent + "%",
-      }}
-    >
-      {/* Floating player card */}
-      {playerObj && (
-        <div className="player-info-card">
-          <strong>{playerObj.name}</strong><br />
-          {playerObj.position} — ⭐{playerObj.rating}
-        </div>
-      )}
-
-      {/* The dot */}
-      <div
-        className="player-dot"
-        style={{
-          background: playerObj ? "#ffd700" : "#ffffff88",
-        }}
-      />
-    </div>
-  );
-})}
-
-      </div>
+      
 
     </div> {/* END builder-layout */}
 
