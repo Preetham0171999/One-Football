@@ -2,6 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import json
 import os
+import joblib
+import pandas as pd
+
+from model import predict_outcome
+
 
 app = FastAPI()
 
@@ -39,6 +44,16 @@ metrics_data = load_json("clubMetrics.json")
 teamdata_file = "data/teamdata.json"
 
 
+
+
+
+
+
+
+@app.post("/predict")
+def predict(payload: dict):
+    result = predict_outcome(payload)
+    return result
 
 
 # 1️⃣ Get all teams
@@ -106,3 +121,13 @@ def get_team_info(team_name: str):
         return teamdata[team_name_lower]
     return {}
 
+
+model = joblib.load("models/win_predictor.pkl")
+
+@app.post("/predict")
+def predict(payload: dict):
+
+    df = pd.DataFrame([payload])   # convert JSON → DataFrame
+    pred = model.predict(df)[0]
+
+    return {"prediction": pred}
