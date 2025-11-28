@@ -3,13 +3,12 @@ import React from "react";
 // import "./TeamBuilder.css";
 import "../styles/Pitch.css";
 
-
 export default function Pitch({
   formationPoints,
   assigned,
   players,
   allPlayers,
-  onDrop
+  onDrop,
 }) {
   return (
     <div
@@ -25,7 +24,7 @@ export default function Pitch({
       {formationPoints.map((p, index) => {
         const playerName = assigned[index];
         const playerObj = [...players, ...allPlayers].find(
-          pl => pl.name === playerName
+          (pl) => pl.name === playerName
         );
 
         return (
@@ -34,17 +33,19 @@ export default function Pitch({
             className="player-dot-wrapper"
             style={{
               left: p.xPercent + "%",
-              top: p.yPercent + "%"
+              top: p.yPercent + "%",
             }}
           >
             {playerObj && (
               <div className="player-info-card">
-                <strong>{playerObj.name}</strong><br />
+                <strong>{playerObj.name}</strong>
+                <br />
                 {playerObj.position} — ⭐{playerObj.rating}
               </div>
             )}
 
-            <div className="player-dot"
+            <div
+              className="player-dot"
               style={{ background: playerObj ? "#ffd700" : "#ffffff88" }}
             />
           </div>
