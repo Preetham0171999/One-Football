@@ -1,9 +1,18 @@
 // utils/dragUtils.js
+import { buildTeamFromAssigned, getTeamRatings } from "./ratingUtils";
+
 export function handleDragStart(e, player) {
   e.dataTransfer.setData("player", JSON.stringify(player));
 }
 
-export function createHandleDrop({ formationPoints, setAssigned, setPlayers }) {
+export function createHandleDrop({
+  formationPoints,
+  setAssigned,
+  setPlayers,
+  playerList,
+  formationRoles,
+  setTeamRating
+}) {
   return function handleDrop(e) {
     e.preventDefault();
 
@@ -14,6 +23,7 @@ export function createHandleDrop({ formationPoints, setAssigned, setPlayers }) {
     const dropX = ((e.clientX - rect.left) / rect.width) * 100;
     const dropY = ((e.clientY - rect.top) / rect.height) * 100;
 
+    // find closest slot
     let closestIndex = null;
     let smallestDist = Infinity;
 
@@ -28,11 +38,22 @@ export function createHandleDrop({ formationPoints, setAssigned, setPlayers }) {
       }
     });
 
-    setAssigned(prev => ({
-      ...prev,
-      [closestIndex]: player.name
-    }));
+    // assign
+    setAssigned(prev => {
+      const updated = { ...prev, [closestIndex]: player.name };
 
+      // ⭐ Build team object based on assigned + roles
+      const { team } = buildTeamFromAssigned(updated, playerList, formationRoles);
+
+      // ⭐ Calculate FINAL rating with role-based logic
+      const { average } = getTeamRatings(team);
+
+      setTeamRating(average);
+
+      return updated;
+    });
+
+    // remove from available list
     setPlayers(prev => prev.filter(p => p.name !== player.name));
   };
 }

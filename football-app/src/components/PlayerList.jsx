@@ -1,6 +1,9 @@
 // components/PlayerList.jsx
 import React from "react";
 import { handleDragStart } from "../utils/dragUtils";
+import "../styles/PlayerList.css";
+
+
 
 export default function PlayerList({ players }) {
   return (

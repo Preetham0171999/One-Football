@@ -1,17 +1,20 @@
 // components/Pitch.jsx
 import React from "react";
+// import "./TeamBuilder.css";
+import "../styles/Pitch.css";
+
 
 export default function Pitch({
   formationPoints,
   assigned,
   players,
   allPlayers,
-  handleDrop
+  onDrop
 }) {
   return (
     <div
       className="pitch-container"
-      onDrop={handleDrop}
+      onDrop={onDrop}
       onDragOver={(e) => e.preventDefault()}
     >
       <div className="penalty-box top"></div>

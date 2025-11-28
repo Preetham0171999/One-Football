@@ -1,6 +1,11 @@
 {
   "Barcelona": [
     {
+      "name": "Marc-André ter Stegen",
+      "position": "Goalkeeper",
+      "rating": 89
+    },
+    {
       "name": "Ronald Araújo",
       "position": "Defender",
       "rating": 86
@@ -11,29 +16,19 @@
       "rating": 85
     },
     {
-      "name": "Andreas Christensen",
-      "position": "Defender",
-      "rating": 83
-    },
-    {
-      "name": "Alejandro Balde",
-      "position": "Defender",
-      "rating": 84
-    },
-    {
       "name": "Pau Cubarsí",
       "position": "Defender",
       "rating": 81
     },
     {
-      "name": "Eric García",
+      "name": "Alejandro Balde",
       "position": "Defender",
-      "rating": 79
+      "rating": 82
     },
     {
-      "name": "Marcos Alonso",
+      "name": "Andreas Christensen",
       "position": "Defender",
-      "rating": 77
+      "rating": 83
     },
     {
       "name": "Pedri",
@@ -51,11 +46,6 @@
       "rating": 86
     },
     {
-      "name": "Oriol Romeu",
-      "position": "Midfielder",
-      "rating": 79
-    },
-    {
       "name": "Ilkay Gündoğan",
       "position": "Midfielder",
       "rating": 85
@@ -63,17 +53,27 @@
     {
       "name": "Fermín López",
       "position": "Midfielder",
-      "rating": 81
+      "rating": 80
     },
     {
-      "name": "Sergio Busquets",
-      "position": "Midfielder",
+      "name": "Robert Lewandowski",
+      "position": "Forward",
+      "rating": 90
+    },
+    {
+      "name": "Lamine Yamal",
+      "position": "Forward",
+      "rating": 85
+    },
+    {
+      "name": "Raphinha",
+      "position": "Forward",
+      "rating": 84
+    },
+    {
+      "name": "Ferran Torres",
+      "position": "Forward",
       "rating": 83
-    },
-    {
-      "name": "Jordi Alba",
-      "position": "Defender",
-      "rating": 82
     }
   ]
 }

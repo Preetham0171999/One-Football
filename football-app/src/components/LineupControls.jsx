@@ -1,19 +1,19 @@
-// components/LineupControls.jsx
 import React from "react";
 
 export default function LineupControls({
+  teams = [],
+  formations = {},
   selectedTeam,
-  teams,
   formation,
-  formations,
   setSelectedTeam,
   setFormation
 }) {
   return (
-    <>
+    <div className="selector-wrapper">
+
       {/* TEAM DROPDOWN */}
       <div className="selector-container">
-        <h2>Select Club ⚽</h2>
+        <h2>Select Your Football Team ⚽</h2>
 
         <select
           value={selectedTeam}
@@ -21,13 +21,17 @@ export default function LineupControls({
           className="team-dropdown"
         >
           <option value="">-- Select Team --</option>
-          {teams.map((t, i) => (
-            <option key={i} value={t}>{t}</option>
-          ))}
+
+          {Array.isArray(teams) &&
+            teams.map((team, idx) => (
+              <option key={idx} value={team}>
+                {team}
+              </option>
+            ))}
         </select>
       </div>
 
-      {/* FORMATION DROPDOWN */}
+      {/* FORMATION SELECTOR */}
       <div className="formation-box">
         <label>Select Formation:</label>
 
@@ -35,11 +39,14 @@ export default function LineupControls({
           value={formation}
           onChange={(e) => setFormation(e.target.value)}
         >
-          {Object.keys(formations).map((f) => (
-            <option key={f} value={f}>{f}</option>
-          ))}
+          {formations &&
+            Object.keys(formations).map((f) => (
+              <option key={f} value={f}>
+                {f}
+              </option>
+            ))}
         </select>
       </div>
-    </>
+    </div>
   );
 }

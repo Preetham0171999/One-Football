@@ -1,0 +1,25 @@
+.player-list-box {
+  display: flex;
+  flex-direction: column;   /* ← MAKE VERTICAL */
+  gap: 10px;
+  width: 220px;             /* fixed width for left panel */
+  padding: 10px;
+  background: #ffffff22;    /* slight transparent box */
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+}
+
+.draggable-player {
+  padding: 8px;
+  margin-bottom: 6px;
+  background: #ffffff33;
+  border-radius: 6px;
+  cursor: grab;
+  color: white;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.draggable-player:hover {
+  background: #ffffff55;
+}
