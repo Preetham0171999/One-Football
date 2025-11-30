@@ -1,0 +1,80 @@
+.pitch-container.match-mode {
+  position: relative;
+  width: 100%;
+  max-width: 480px;   /* adjust as needed */
+  aspect-ratio: 2 / 3; /* perfect pitch ratio */
+  margin: 0 auto;
+  background: #228b22;
+  border: 3px solid white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* halves */
+.pitch-half {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  left: 0;
+}
+
+.top-half { top: 0; }
+.bottom-half { bottom: 0; }
+
+/* center line & circle */
+.center-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: white;
+  transform: translateY(-1px);
+}
+
+.center-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  border: 2px solid white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Penalty Boxes */
+.penalty-box {
+  position: absolute;
+  width: 70%;
+  height: 14%;
+  left: 15%;
+  border: 2px solid white;
+}
+
+.top-box { top: 0; }
+.bottom-box { bottom: 0; }
+
+/* player styling */
+.player-dot-wrapper {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.player-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: px solid #fff;
+}
+
+.player-info-card {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+}

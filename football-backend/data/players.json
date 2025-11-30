@@ -1,79 +1,265 @@
 {
-  "Barcelona": [
-    {
-      "name": "M_ter_Stegen",
-      "position": "Goalkeeper",
-      "rating": 89
-    },
-    {
-      "name": "R_Araujo",
-      "position": "Defender",
-      "rating": 86
-    },
-    {
-      "name": "J_Kounde",
-      "position": "Defender",
-      "rating": 85
-    },
-    {
-      "name": "P_Cubarsi",
-      "position": "Defender",
-      "rating": 81
-    },
-    {
-      "name": "A_Balde",
-      "position": "Defender",
-      "rating": 82
-    },
-    {
-      "name": "A_Christensen",
-      "position": "Defender",
-      "rating": 83
-    },
-    {
-      "name": "Pedri",
-      "position": "Midfielder",
-      "rating": 88
-    },
-    {
-      "name": "F_de_Jong",
-      "position": "Midfielder",
-      "rating": 87
-    },
-    {
-      "name": "Gavi",
-      "position": "Midfielder",
-      "rating": 86
-    },
-    {
-      "name": "I_Gundogan",
-      "position": "Midfielder",
-      "rating": 85
-    },
-    {
-      "name": "F_Lopez",
-      "position": "Midfielder",
-      "rating": 80
-    },
-    {
-      "name": "R_Lewandowski",
-      "position": "Forward",
-      "rating": 90
-    },
-    {
-      "name": "L_Yamal",
-      "position": "Forward",
-      "rating": 85
-    },
-    {
-      "name": "Raphinha",
-      "position": "Forward",
-      "rating": 84
-    },
-    {
-      "name": "F_Torres",
-      "position": "Forward",
-      "rating": 83
-    }
-  ]
+"Barcelona": [
+{
+"name": "M_ter_Stegen",
+"position": "Goalkeeper",
+"rating": 89
+},
+{
+"name": "R_Araujo",
+"position": "Defender",
+"rating": 86
+},
+{
+"name": "J_Kounde",
+"position": "Defender",
+"rating": 85
+},
+{
+"name": "P_Cubarsi",
+"position": "Defender",
+"rating": 81
+},
+{
+"name": "A_Balde",
+"position": "Defender",
+"rating": 82
+},
+{
+"name": "A_Christensen",
+"position": "Defender",
+"rating": 83
+},
+{
+"name": "Pedri",
+"position": "Midfielder",
+"rating": 88
+},
+{
+"name": "F_de_Jong",
+"position": "Midfielder",
+"rating": 87
+},
+{
+"name": "Gavi",
+"position": "Midfielder",
+"rating": 86
+},
+{
+"name": "I_Gundogan",
+"position": "Midfielder",
+"rating": 85
+},
+{
+"name": "F_Lopez",
+"position": "Midfielder",
+"rating": 80
+},
+{
+"name": "R_Lewandowski",
+"position": "Forward",
+"rating": 90
+},
+{
+"name": "L_Yamal",
+"position": "Forward",
+"rating": 85
+},
+{
+"name": "Raphinha",
+"position": "Forward",
+"rating": 84
+},
+{
+"name": "F_Torres",
+"position": "Forward",
+"rating": 83
+}
+],
+"PSG": [
+{
+"name": "G_Donnarumma",
+"position": "Goalkeeper",
+"rating": 87
+},
+{
+"name": "M_Skriniar",
+"position": "Defender",
+"rating": 86
+},
+{
+"name": "Marquinhos",
+"position": "Defender",
+"rating": 87
+},
+{
+"name": "L_Hernandez",
+"position": "Defender",
+"rating": 84
+},
+{
+"name": "A_Hakimi",
+"position": "Defender",
+"rating": 85
+},
+{
+"name": "Vitinha",
+"position": "Midfielder",
+"rating": 82
+},
+{
+"name": "M_Ugarte",
+"position": "Midfielder",
+"rating": 81
+},
+{
+"name": "Fabian",
+"position": "Midfielder",
+"rating": 84
+},
+{
+"name": "W_Zaire_Emery",
+"position": "Midfielder",
+"rating": 83
+},
+{
+"name": "K_Mbappe",
+"position": "Forward",
+"rating": 91
+},
+{
+"name": "O_Dembele",
+"position": "Forward",
+"rating": 85
+},
+{
+"name": "R_Kolo_Muani",
+"position": "Forward",
+"rating": 84
+}
+],
+"Arsenal": [
+{
+"name": "D_Raya",
+"position": "Goalkeeper",
+"rating": 84
+},
+{
+"name": "W_Saliba",
+"position": "Defender",
+"rating": 85
+},
+{
+"name": "Gabriel",
+"position": "Defender",
+"rating": 84
+},
+{
+"name": "B_White",
+"position": "Defender",
+"rating": 83
+},
+{
+"name": "O_Zinchenko",
+"position": "Defender",
+"rating": 83
+},
+{
+"name": "T_Partey",
+"position": "Midfielder",
+"rating": 85
+},
+{
+"name": "D_Rice",
+"position": "Midfielder",
+"rating": 85
+},
+{
+"name": "M_Odegaard",
+"position": "Midfielder",
+"rating": 87
+},
+{
+"name": "K_Havertz",
+"position": "Midfielder",
+"rating": 84
+},
+{
+"name": "B_Saka",
+"position": "Forward",
+"rating": 86
+},
+{
+"name": "G_Jesus",
+"position": "Forward",
+"rating": 84
+},
+{
+"name": "G_Martinelli",
+"position": "Forward",
+"rating": 84
+}
+],
+"Liverpool": [
+{
+"name": "A_Becker",
+"position": "Goalkeeper",
+"rating": 88
+},
+{
+"name": "V_VanDijk",
+"position": "Defender",
+"rating": 89
+},
+{
+"name": "I_Konate",
+"position": "Defender",
+"rating": 84
+},
+{
+"name": "A_Arnold",
+"position": "Defender",
+"rating": 87
+},
+{
+"name": "A_Robertson",
+"position": "Defender",
+"rating": 86
+},
+{
+"name": "A_MacAllister",
+"position": "Midfielder",
+"rating": 84
+},
+{
+"name": "D_Szoboszlai",
+"position": "Midfielder",
+"rating": 84
+},
+{
+"name": "W_Endo",
+"position": "Midfielder",
+"rating": 81
+},
+{
+"name": "M_Salah",
+"position": "Forward",
+"rating": 90
+},
+{
+"name": "D_Nunez",
+"position": "Forward",
+"rating": 84
+},
+{
+"name": "L_Diaz",
+"position": "Forward",
+"rating": 84
+},
+{
+"name": "C_Gakpo",
+"position": "Forward",
+"rating": 84
+}
+]
 }

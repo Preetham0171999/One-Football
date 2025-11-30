@@ -1,0 +1,99 @@
+.build-match-container {
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+.match-layout {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  margin-top: 30px;
+}
+.team-side {
+  flex: 1;
+  min-width: 400px;
+  max-width: 40\00px;
+  width: 100%;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  background: #fff;
+  position: relative;
+  z-index: 5;
+}
+
+.side-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  min-width: 280px;
+  max-width: 360px;      /* prevents overflow */
+}
+
+
+
+.side-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 20px;
+  width: 100%;
+  position: relative;
+}
+
+
+/* Layout for the dropdown-pitch-dropdown row */
+.team-dropdowns {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Drop only takes its own side space — no stretching */
+.side-dropdown {
+  flex: 1;            /* take equal space on both sides */
+  max-width: 560px;   /* but don’t explode out of layout */
+  min-width: 260px;
+}
+
+
+/* Left & right separate in case you want future styling */
+.left-side-dropdown { text-align: left; }
+.right-side-dropdown { text-align: right; }
+
+/* Ensure dropdowns don’t expand full-width */
+.side-dropdown select {
+  width: 100% !important;   /* full width INSIDE the wrapper, not screen */
+}
+
+
+.match-outer-grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;             /* space between left – pitch – right */
+  margin-top: 20px;
+  width: 100%;
+}
+
+
+.pitch-container.match-mode {
+  width: 420px;
+  height: 620px;
+  flex-shrink: 0;        /* Do not allow pitch to shrink */
+}
+
+.match-side {
+  display: flex;
+  flex-direction: column;
+  
+  gap: 0;
+}
+
+
