@@ -13,9 +13,10 @@ export default function MatchPitch({
 }) {
   return (
     <div className="pitch-container match-mode">
-      {/* TOP PENALTY BOX */}
+
       <div className="penalty-box top-box"></div>
 
+      {/* TOP TEAM */}
       <TeamHalf
         team="top"
         points={formationPoints.left}
@@ -26,10 +27,10 @@ export default function MatchPitch({
         color="#3276ff"
       />
 
-      {/* Center line & circle */}
       <div className="center-line"></div>
       <div className="center-circle"></div>
 
+      {/* BOTTOM TEAM */}
       <TeamHalf
         team="bottom"
         points={formationPoints.right}
@@ -38,9 +39,9 @@ export default function MatchPitch({
         allPlayers={allPlayers.right}
         onDrop={onDropRight}
         color="#ff4040"
+        reverse={true}
       />
 
-      {/* BOTTOM PENALTY BOX */}
       <div className="penalty-box bottom-box"></div>
     </div>
   );

@@ -6,14 +6,22 @@ export default function LineupControls({
   selectedTeam,
   formation,
   setSelectedTeam,
-  setFormation
+  setFormation,
+  logo
 }) {
   return (
     <div className="selector-wrapper">
-
-      {/* TEAM DROPDOWN */}
+      
+      {/* TEAM DROPDOWN + LOGO */}
       <div className="selector-container">
-        <h2>Select Your Football Team ⚽</h2>
+
+        <div className="team-display">
+          {logo && (
+            <img src={logo} alt={selectedTeam} className="team-logo" />
+          )}
+
+          <h2>Select Your Football Team ⚽</h2>
+        </div>
 
         <select
           value={selectedTeam}
@@ -41,12 +49,11 @@ export default function LineupControls({
         >
           {formations &&
             Object.keys(formations).map((f) => (
-              <option key={f} value={f}>
-                {f}
-              </option>
+              <option key={f} value={f}>{f}</option>
             ))}
         </select>
       </div>
     </div>
   );
 }
+

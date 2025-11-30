@@ -17,7 +17,7 @@ export default function BuildMatch() {
   const [leftFormation, setLeftFormation] = useState("4-3-3");
   const [leftTeamRating, setLeftTeamRating] = useState(0);
 
-
+  const [leftLogo, setLeftLogo] = useState("");
 
   // RIGHT TEAM
   const [rightTeam, setRightTeam] = useState("");
@@ -26,6 +26,7 @@ export default function BuildMatch() {
   const [rightAssigned, setRightAssigned] = useState({});
   const [rightFormation, setRightFormation] = useState("4-3-3");
   const [rightTeamRating, setRightTeamRating] = useState(0);
+  const [rightLogo, setRightLogo] = useState("");
 
   const formations = {
     "4-3-3": { defense: 4, midfield: 3, attack: 3 },
@@ -36,6 +37,8 @@ export default function BuildMatch() {
 
   const pitchRef = useRef(null);
 
+  // Mirror Y-axis for the right/bottom team
+
   function getRoles(formation) {
     const [d, m, a] = formation.split("-").map(Number);
     return [
@@ -45,6 +48,24 @@ export default function BuildMatch() {
       ...Array(a).fill("attack"),
     ];
   }
+
+  useEffect(() => {
+    if (!leftTeam) return;
+
+    fetch(`http://localhost:8000/logo/${leftTeam}`)
+      .then((res) => res.json())
+      .then((data) => setLeftLogo(data.logo))
+      .catch((err) => console.error("Left logo fetch error:", err));
+  }, [leftTeam]);
+
+  useEffect(() => {
+    if (!rightTeam) return;
+
+    fetch(`http://localhost:8000/logo/${rightTeam}`)
+      .then((res) => res.json())
+      .then((data) => setRightLogo(data.logo))
+      .catch((err) => console.error("Right logo fetch error:", err));
+  }, [rightTeam]);
 
   // LOAD TEAM LIST
   useEffect(() => {
@@ -87,6 +108,15 @@ export default function BuildMatch() {
     [rightFormation]
   );
 
+  const mirroredRightCoords = useMemo(
+    () =>
+      rightCoords.map((p) => ({
+        ...p,
+        yPercent: 100 - p.yPercent, // flip vertically
+      })),
+    [rightCoords]
+  );
+
   // DRAG-DROP HANDLERS
   const leftHandleDrop = useMemo(
     () =>
@@ -104,61 +134,61 @@ export default function BuildMatch() {
   const rightHandleDrop = useMemo(
     () =>
       createHandleDrop({
-        formationPoints: rightCoords,
+        formationPoints: mirroredRightCoords,
         setAssigned: setRightAssigned,
         setPlayers: setRightPlayers,
         playerList: [...rightAllPlayers, ...rightPlayers],
         formationRoles: getRoles(rightFormation),
         setTeamRating: setRightTeamRating,
       }),
-    [rightCoords, rightAllPlayers, rightPlayers, rightFormation]
+    [mirroredRightCoords, rightAllPlayers, rightPlayers, rightFormation]
   );
 
   return (
-  <div className="build-match-container">
-    <h1 className="match-title">⚔️ Build Match</h1>
+    <div className="build-match-container">
+      <h1 className="match-title">⚔️ Build Match</h1>
 
-    <div className="match-outer-grid">
-      
-      {/* LEFT SIDE */}
-      <div className="side-wrapper">
-        <LineupControls
-          teams={teams}
-          formations={formations}
-          selectedTeam={leftTeam}
-          setSelectedTeam={setLeftTeam}
-          formation={leftFormation}
-          setFormation={setLeftFormation}
+      <div className="match-outer-grid">
+        {/* LEFT SIDE */}
+        <div className="side-wrapper">
+          <LineupControls
+            teams={teams}
+            formations={formations}
+            selectedTeam={leftTeam}
+            setSelectedTeam={setLeftTeam}
+            formation={leftFormation}
+            setFormation={setLeftFormation}
+            logo={leftLogo}
+          />
+
+          <PlayerList players={leftPlayers} title="Team A Players" />
+        </div>
+
+        {/* CENTER PITCH */}
+        <MatchPitch
+          assigned={{ left: leftAssigned, right: rightAssigned }}
+          formationPoints={{ left: leftCoords, right: rightCoords }}
+          players={{ left: leftPlayers, right: rightPlayers }}
+          allPlayers={{ left: leftAllPlayers, right: rightAllPlayers }}
+          onDropLeft={leftHandleDrop}
+          onDropRight={rightHandleDrop}
         />
 
-        <PlayerList players={leftPlayers} title="Team A Players" />
-      </div>
+        {/* RIGHT SIDE */}
+        <div className="side-wrapper">
+          <LineupControls
+            teams={teams}
+            formations={formations}
+            selectedTeam={rightTeam}
+            setSelectedTeam={setRightTeam}
+            formation={rightFormation}
+            setFormation={setRightFormation}
+            logo={rightLogo}
+          />
 
-      {/* CENTER PITCH */}
-      <MatchPitch
-        assigned={{ left: leftAssigned, right: rightAssigned }}
-        formationPoints={{ left: leftCoords, right: rightCoords }}
-        players={{ left: leftPlayers, right: rightPlayers }}
-        allPlayers={{ left: leftAllPlayers, right: rightAllPlayers }}
-        onDropLeft={leftHandleDrop}
-        onDropRight={rightHandleDrop}
-      />
-
-      {/* RIGHT SIDE */}
-      <div className="side-wrapper">
-        <LineupControls
-          teams={teams}
-          formations={formations}
-          selectedTeam={rightTeam}
-          setSelectedTeam={setRightTeam}
-          formation={rightFormation}
-          setFormation={setRightFormation}
-        />
-
-        <PlayerList players={rightPlayers} title="Team B Players" />
+          <PlayerList players={rightPlayers} title="Team B Players" />
+        </div>
       </div>
     </div>
-  </div>
-);
-
+  );
 }
