@@ -6,6 +6,10 @@ import joblib
 import pandas as pd
 
 from model import predict_outcome
+from pydantic import BaseModel
+
+from rivals import predict_result
+
 
 
 app = FastAPI()
@@ -45,7 +49,14 @@ teamdata_file = "data/teamdata.json"
 
 
 
+class Match(BaseModel):
+    team_a: str
+    team_b: str
 
+@app.post("/predict")
+def predict(match: Match):
+    result = predict_result(match.team_a, match.team_b)
+    return {"winner": result}
 
 
 

@@ -1,0 +1,121 @@
+Match_ID,Team_A,Team_B,Winner
+1,Real Madrid,Barcelona,Real Madrid
+2,Liverpool,Arsenal,Liverpool
+3,Bayern Munich,PSG,Bayern Munich
+4,Juventus,Manchester United,Draw
+5,Arsenal,Real Madrid,Real Madrid
+6,PSG,Liverpool,Draw
+7,Barcelona,Bayern Munich,Draw
+8,Manchester United,Real Madrid,Real Madrid
+9,Liverpool,Juventus,Liverpool
+10,Arsenal,PSG,PSG
+11,Barcelona,Manchester United,Barcelona
+12,Real Madrid,Bayern Munich,Real Madrid
+13,Juventus,Arsenal,Draw
+14,PSG,Real Madrid,Real Madrid
+15,Liverpool,Barcelona,Liverpool
+16,Bayern Munich,Manchester United,Bayern Munich
+17,Arsenal,Barcelona,Barcelona
+18,Real Madrid,Juventus,Real Madrid
+19,Manchester United,Liverpool,Liverpool
+20,Bayern Munich,Arsenal,Bayern Munich
+21,Juventus,Barcelona,Draw
+22,PSG,Manchester United,PSG
+23,Liverpool,Bayern Munich,Draw
+24,Real Madrid,Arsenal,Real Madrid
+25,Barcelona,PSG,Draw
+26,Manchester United,Juventus,Manchester United
+27,Arsenal,Liverpool,Liverpool
+28,Bayern Munich,Real Madrid,Bayern Munich
+29,Juventus,PSG,Draw
+30,Liverpool,Real Madrid,Real Madrid
+31,Barcelona,Arsenal,Barcelona
+32,Manchester United,Bayern Munich,Bayern Munich
+33,Real Madrid,Liverpool,Real Madrid
+34,Arsenal,Juventus,Draw
+35,PSG,Bayern Munich,Bayern Munich
+36,Barcelona,Manchester United,Barcelona
+37,Liverpool,Real Madrid,Real Madrid
+38,Bayern Munich,Juventus,Bayern Munich
+39,Manchester United,Arsenal,Draw
+40,PSG,Barcelona,PSG
+41,Real Madrid,Juventus,Real Madrid
+42,Arsenal,Bayern Munich,Bayern Munich
+43,Liverpool,Manchester United,Liverpool
+44,Barcelona,PSG,Barcelona
+45,Juventus,Liverpool,Liverpool
+46,Bayern Munich,Real Madrid,Real Madrid
+47,Manchester United,Barcelona,Draw
+48,PSG,Arsenal,PSG
+49,Liverpool,Barcelona,Liverpool
+50,Real Madrid,PSG,Real Madrid
+51,Juventus,Bayern Munich,Bayern Munich
+52,Arsenal,Manchester United,Arsenal
+53,PSG,Juventus,PSG
+54,Bayern Munich,Liverpool,Draw
+55,Barcelona,Real Madrid,Real Madrid
+56,Manchester United,Arsenal,Draw
+57,Juventus,Barcelona,Draw
+58,Liverpool,PSG,Liverpool
+59,Real Madrid,Manchester United,Real Madrid
+60,Arsenal,Bayern Munich,Bayern Munich
+61,PSG,Real Madrid,Real Madrid
+62,Barcelona,Juventus,Barcelona
+63,Bayern Munich,Liverpool,Bayern Munich
+64,Manchester United,PSG,Draw
+65,Real Madrid,Arsenal,Real Madrid
+66,Juventus,Manchester United,Draw
+67,Liverpool,Barcelona,Liverpool
+68,Arsenal,Real Madrid,Real Madrid
+69,PSG,Bayern Munich,Bayern Munich
+70,Barcelona,Liverpool,Draw
+71,Manchester United,Juventus,Manchester United
+72,Bayern Munich,Arsenal,Bayern Munich
+73,Real Madrid,Barcelona,Real Madrid
+74,Liverpool,Juventus,Liverpool
+75,Arsenal,PSG,Draw
+76,Barcelona,Real Madrid,Real Madrid
+77,Juventus,Liverpool,Liverpool
+78,PSG,Manchester United,PSG
+79,Bayern Munich,Barcelona,Draw
+80,Manchester United,Real Madrid,Real Madrid
+81,Liverpool,Arsenal,Liverpool
+82,Real Madrid,Bayern Munich,Real Madrid
+83,Arsenal,Juventus,Draw
+84,Barcelona,Liverpool,Liverpool
+85,PSG,Real Madrid,Real Madrid
+86,Juventus,Bayern Munich,Bayern Munich
+87,Manchester United,Barcelona,Barcelona
+88,Bayern Munich,PSG,Bayern Munich
+89,Liverpool,Arsenal,Draw
+90,Real Madrid,Juventus,Real Madrid
+91,Arsenal,Manchester United,Arsenal
+92,Barcelona,Bayern Munich,Bayern Munich
+93,Juventus,PSG,Draw
+94,Manchester United,Liverpool,Liverpool
+95,Bayern Munich,Real Madrid,Real Madrid
+96,PSG,Barcelona,PSG
+97,Liverpool,Juventus,Draw
+98,Real Madrid,Arsenal,Real Madrid
+99,Barcelona,Manchester United,Barcelona
+100,PSG,Liverpool,Liverpool
+101,Bayern Munich,Juventus,Bayern Munich
+102,Manchester United,Arsenal,Draw
+103,Juventus,Real Madrid,Real Madrid
+104,Arsenal,Barcelona,Draw
+105,Liverpool,Bayern Munich,Draw
+106,Real Madrid,Manchester United,Real Madrid
+107,Barcelona,PSG,Barcelona
+108,Bayern Munich,Juventus,Bayern Munich
+109,Manchester United,Liverpool,Liverpool
+110,PSG,Arsenal,PSG
+111,Real Madrid,Barcelona,Real Madrid
+112,Liverpool,Juventus,Liverpool
+113,Arsenal,Bayern Munich,Bayern Munich
+114,Barcelona,Real Madrid,Real Madrid
+115,Juventus,Manchester United,Draw
+116,PSG,Arsenal,PSG
+117,Bayern Munich,Liverpool,Bayern Munich
+118,Real Madrid,Juventus,Real Madrid
+119,Manchester United,Barcelona,Barcelona
+120,Liverpool,PSG,Liverpool

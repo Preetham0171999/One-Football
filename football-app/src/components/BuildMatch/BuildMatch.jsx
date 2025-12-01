@@ -16,6 +16,8 @@ export default function BuildMatch() {
   const [leftAssigned, setLeftAssigned] = useState({});
   const [leftFormation, setLeftFormation] = useState("4-3-3");
   const [leftTeamRating, setLeftTeamRating] = useState(0);
+  const [prediction, setPrediction] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [leftLogo, setLeftLogo] = useState("");
 
@@ -144,6 +146,36 @@ export default function BuildMatch() {
     [mirroredRightCoords, rightAllPlayers, rightPlayers, rightFormation]
   );
 
+  const handlePredict = async () => {
+    if (!leftTeam || !rightTeam) {
+      alert("Select both teams first!");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:8000/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          team_a: leftTeam,
+          team_b: rightTeam,
+        }),
+      });
+
+      const data = await res.json();
+      setPrediction(data.winner);
+    } catch (err) {
+      console.error(err);
+      setPrediction("Error predicting result");
+    }
+
+    setLoading(false);
+  };
+
   return (
     <div className="build-match-container">
       <h1 className="match-title">⚔️ Build Match</h1>
@@ -175,6 +207,8 @@ export default function BuildMatch() {
           onDropRight={rightHandleDrop}
         />
 
+
+
         {/* RIGHT SIDE */}
         <div className="side-wrapper">
           <LineupControls
@@ -191,6 +225,20 @@ export default function BuildMatch() {
           <PlayerList players={rightPlayers} title="Team B Players" />
         </div>
       </div>
+              {/* --- PREDICTION SECTION BELOW PITCH --- */}
+        <div className="predict-wrapper">
+          <button className="predict-btn" onClick={handlePredict}>
+            🔮 Predict Winner
+          </button>
+
+          {loading && <p>Loading prediction...</p>}
+
+          {prediction && (
+            <p className="prediction-result">
+              🏆 Predicted Result: <strong>{prediction}</strong>
+            </p>
+          )}
+        </div>
     </div>
   );
 }
