@@ -1,4 +1,6 @@
 import React from "react";
+import TeamRatingDisplay from "./TeamRatingDisplay";
+import "../styles/LineupControls.css";
 
 export default function LineupControls({
   teams = [],
@@ -7,22 +9,39 @@ export default function LineupControls({
   formation,
   setSelectedTeam,
   setFormation,
-  logo
+  logo,
+  teamRating   // <-- new
 }) {
   return (
     <div className="selector-wrapper">
-      
-      {/* TEAM DROPDOWN + LOGO */}
+
+      {/* TEAM SELECTOR + LOGO + RATING */}
       <div className="selector-container">
 
-        <div className="team-display">
+        <div className="team-display-row">
+          
+          {/* Logo */}
           {logo && (
-            <img src={logo} alt={selectedTeam} className="team-logo" />
+            <img 
+              src={logo} 
+              alt={selectedTeam} 
+              className="team-logo"
+            />
           )}
 
-          <h2>Select Your Football Team ⚽</h2>
+          {/* Title */}
+          <h2 className="team-title">Select Your Football Team ⚽</h2>
+
+          {/* Rating meter (only after team selected) */}
+          {selectedTeam && (
+            <div className="team-rating-wrapper">
+              <TeamRatingDisplay rating={teamRating} />
+            </div>
+          )}
+
         </div>
 
+        {/* Team Dropdown */}
         <select
           value={selectedTeam}
           onChange={(e) => setSelectedTeam(e.target.value)}
@@ -47,13 +66,14 @@ export default function LineupControls({
           value={formation}
           onChange={(e) => setFormation(e.target.value)}
         >
-          {formations &&
-            Object.keys(formations).map((f) => (
-              <option key={f} value={f}>{f}</option>
-            ))}
+          {Object.keys(formations).map((f) => (
+            <option key={f} value={f}>
+              {f}
+            </option>
+          ))}
         </select>
       </div>
+
     </div>
   );
 }
-

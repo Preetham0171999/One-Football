@@ -1,0 +1,26 @@
+
+.team-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.team-rating-wrapper {
+  margin-left: 20px; /* small gap from logo/title, move towards pitch */
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.team-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+
+.team-display-row.right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-start; /* logo/title to the right, rating next to pitch */
+  flex-direction: row-reverse;
+}

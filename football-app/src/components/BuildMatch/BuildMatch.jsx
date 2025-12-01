@@ -159,6 +159,7 @@ export default function BuildMatch() {
             formation={leftFormation}
             setFormation={setLeftFormation}
             logo={leftLogo}
+            teamRating={leftTeamRating}
           />
 
           <PlayerList players={leftPlayers} title="Team A Players" />
@@ -184,6 +185,7 @@ export default function BuildMatch() {
             formation={rightFormation}
             setFormation={setRightFormation}
             logo={rightLogo}
+            teamRating={rightTeamRating}
           />
 
           <PlayerList players={rightPlayers} title="Team B Players" />

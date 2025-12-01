@@ -23,3 +23,51 @@
 .draggable-player:hover {
   background: #ffffff55;
 }
+
+.player-list-container {
+  background: #101010;
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  max-height: 420px;
+  overflow-y: auto;
+  border: 1px solid #444;
+}
+
+.player-list-title {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.player-section {
+  margin-bottom: 16px;
+}
+
+.player-section-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffdf5d;
+  margin-bottom: 6px;
+}
+
+.player-item {
+  padding: 8px;
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: grab;
+  display: flex;
+  justify-content: space-between;
+}
+
+.player-item:hover {
+  background: #272727;
+}
+
+.player-meta {
+  opacity: 0.8;
+}
+

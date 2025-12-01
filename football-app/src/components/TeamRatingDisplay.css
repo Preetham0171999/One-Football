@@ -1,0 +1,23 @@
+.team-rating-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #ffcc00;
+}
+
+.rating-bar {
+  margin-top: 4px;
+  width: 120px;
+  height: 8px;
+  background: #333;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.rating-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #ffd54f, #ffa000);
+  transition: width 0.3s ease-out;
+}

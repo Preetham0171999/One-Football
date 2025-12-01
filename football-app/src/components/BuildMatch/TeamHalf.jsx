@@ -11,7 +11,7 @@ export default function TeamHalf({
   color = "#ffffff88",
   reverse = false,
 }) {
-  const centerPull = 0.95;
+  const centerPull = 1.35;
   const topScale = 1.05;
   const bottomScale = 1.05;
   const bottomLiftPct = 6;
@@ -59,12 +59,15 @@ export default function TeamHalf({
             style={{ left: `${leftPct}%`, top: `${topPct}%` }}
           >
             {playerObj && (
-              <div className={`player-info-card ${team}`}>
-                <strong>{playerObj.name}</strong>
-                <br />
-                {playerObj.position} — ⭐{playerObj.rating}
-              </div>
-            )}
+  <div className={`player-info-card ${team}`}>
+    <div className="info-content">
+      <strong>{playerObj.name}</strong>
+      <br />
+      {playerObj.position?.charAt(0)} — ⭐{playerObj.rating}
+    </div>
+  </div>
+)}
+
 
             <div
               className="player-dot"
