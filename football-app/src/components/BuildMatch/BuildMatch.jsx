@@ -146,58 +146,81 @@ export default function BuildMatch() {
     [mirroredRightCoords, rightAllPlayers, rightPlayers, rightFormation]
   );
 
-  const handlePredict = async () => {
-    if (!leftTeam || !rightTeam) {
-      alert("Select both teams first!");
-      return;
-    }
+ const handlePredict = async () => {
+  setLoading(true);
+  setPrediction(null);
 
-    setLoading(true);
-
-    try {
-      const res = await fetch("http://localhost:8000/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          team_a: leftTeam,
-          team_b: rightTeam,
-        }),
-      });
-
-      const data = await res.json();
-      setPrediction(data.winner);
-    } catch (err) {
-      console.error(err);
-      setPrediction("Error predicting result");
-    }
-
-    setLoading(false);
+  const payload = {
+    team_a: leftTeam,
+    team_b: rightTeam,
+    left_playing_11: leftAssigned,
+    right_playing_11: rightAssigned,
+    left_rating: leftTeamRating,
+    right_rating: rightTeamRating
   };
 
-  return (
-    <div className="build-match-container">
-      <h1 className="match-title">⚔️ Build Match</h1>
+  console.log("📤 Sending payload to backend:", payload);
+  console.log("typeof team_a =", typeof leftTeam);
+console.log("typeof left_playing_11 =", typeof leftAssigned);
+console.log("typeof left_rating =", typeof leftTeamRating);
 
-      <div className="match-outer-grid">
-        {/* LEFT SIDE */}
-        <div className="side-wrapper">
-          <LineupControls
-            teams={teams}
-            formations={formations}
-            selectedTeam={leftTeam}
-            setSelectedTeam={setLeftTeam}
-            formation={leftFormation}
-            setFormation={setLeftFormation}
-            logo={leftLogo}
-            teamRating={leftTeamRating}
-          />
+console.log(payload);
 
-          <PlayerList players={leftPlayers} title="Team A Players" />
-        </div>
 
-        {/* CENTER PITCH */}
+  try {
+    const res = await fetch("http://localhost:8000/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      
+    });
+
+    const data = await res.json();
+    console.log("📥 Backend responded with:", data);
+
+    if (data.error) {
+      console.error("❌ Backend error:", data.error);
+      setPrediction(`Error: ${data.error}`);
+    } else {
+      setPrediction(data.winner);  // <-- backend returns { winner: "Real Madrid" }
+    }
+
+  } catch (err) {
+    console.error("❌ Network Error:", err);
+    setPrediction("Network error");
+  }
+
+  setLoading(false);
+};
+
+
+
+
+return (
+  <div className="build-match-container">
+    <h1 className="match-title">⚔️ Build Match</h1>
+
+    <div className="match-outer-grid">
+
+      {/* LEFT SIDE */}
+      <div className="side-wrapper">
+        <LineupControls
+          teams={teams}
+          formations={formations}
+          selectedTeam={leftTeam}
+          setSelectedTeam={setLeftTeam}
+          formation={leftFormation}
+          setFormation={setLeftFormation}
+          logo={leftLogo}
+          teamRating={leftTeamRating}
+        />
+        <PlayerList players={leftPlayers} title="Team A Players" />
+      </div>
+
+      {/* CENTER PITCH */}
+      <div className="center-wrapper">
         <MatchPitch
           assigned={{ left: leftAssigned, right: rightAssigned }}
           formationPoints={{ left: leftCoords, right: rightCoords }}
@@ -207,25 +230,7 @@ export default function BuildMatch() {
           onDropRight={rightHandleDrop}
         />
 
-
-
-        {/* RIGHT SIDE */}
-        <div className="side-wrapper">
-          <LineupControls
-            teams={teams}
-            formations={formations}
-            selectedTeam={rightTeam}
-            setSelectedTeam={setRightTeam}
-            formation={rightFormation}
-            setFormation={setRightFormation}
-            logo={rightLogo}
-            teamRating={rightTeamRating}
-          />
-
-          <PlayerList players={rightPlayers} title="Team B Players" />
-        </div>
-      </div>
-              {/* --- PREDICTION SECTION BELOW PITCH --- */}
+        {/* ⭐ Prediction box moved UP here */}
         <div className="predict-wrapper">
           <button className="predict-btn" onClick={handlePredict}>
             🔮 Predict Winner
@@ -239,6 +244,25 @@ export default function BuildMatch() {
             </p>
           )}
         </div>
+      </div>
+
+      {/* RIGHT SIDE */}
+      <div className="side-wrapper">
+        <LineupControls
+          teams={teams}
+          formations={formations}
+          selectedTeam={rightTeam}
+          setSelectedTeam={setRightTeam}
+          formation={rightFormation}
+          setFormation={setRightFormation}
+          logo={rightLogo}
+          teamRating={rightTeamRating}
+        />
+        <PlayerList players={rightPlayers} title="Team B Players" />
+      </div>
     </div>
-  );
+  </div>
+);
+
+
 }

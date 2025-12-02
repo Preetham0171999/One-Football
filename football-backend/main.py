@@ -5,10 +5,10 @@ import os
 import joblib
 import pandas as pd
 
-from model import predict_outcome
 from pydantic import BaseModel
 
-from rivals import predict_result
+from logic.combined_predictor.predict import combine_predictions
+
 
 
 
@@ -52,19 +52,30 @@ teamdata_file = "data/teamdata.json"
 class Match(BaseModel):
     team_a: str
     team_b: str
+    left_playing_11: dict
+    right_playing_11: dict
+    left_rating: float
+    right_rating: float
+
+
 
 @app.post("/predict")
 def predict(match: Match):
-    result = predict_result(match.team_a, match.team_b)
+    try:
+        result = combine_predictions(
+            match.team_a,
+            match.team_b,
+            match.left_playing_11,
+            match.right_playing_11,
+            match.left_rating,
+            match.right_rating
+        )
+    except Exception as e:
+        return {"error": str(e)}
+
     return {"winner": result}
 
 
-
-
-@app.post("/predict")
-def predict(payload: dict):
-    result = predict_outcome(payload)
-    return result
 
 
 # 1️⃣ Get all teams
@@ -133,12 +144,3 @@ def get_team_info(team_name: str):
     return {}
 
 
-model = joblib.load("models/win_predictor.pkl")
-
-@app.post("/predict")
-def predict(payload: dict):
-
-    df = pd.DataFrame([payload])   # convert JSON → DataFrame
-    pred = model.predict(df)[0]
-
-    return {"prediction": pred}
