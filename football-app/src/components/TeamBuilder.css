@@ -163,7 +163,7 @@
 
 .player-info-card {
   position: absolute;
-  bottom: 30px;        /* lifts above the dot */
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   padding: 6px 10px;
@@ -172,8 +172,11 @@
   border-radius: 6px;
   font-size: 11px;
   white-space: nowrap;
-  pointer-events: none;
+  /* allow clicks */
+  pointer-events: auto !important;
+  z-index: 20;
 }
+
 
 
 

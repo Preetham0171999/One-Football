@@ -37,3 +37,32 @@ export function getFormationCoordinates(formation) {
 
   return points;
 }
+
+export const formationRoles = {
+  "4-3-3": [
+    "goalkeeper",
+    "left-back", "left-center-back", "right-center-back", "right-back",
+    "left-mid", "center-mid", "right-mid",
+    "left-wing", "striker", "right-wing"
+  ],
+  "4-4-2": [
+    "goalkeeper",
+    "left-back", "left-center-back", "right-center-back", "right-back",
+    "left-mid", "left-center-mid", "right-center-mid", "right-mid",
+    "striker-1", "striker-2"
+  ],
+  "3-5-2": [
+    "goalkeeper",
+    "left-center-back", "center-back", "right-center-back",
+    "left-mid", "left-center-mid", "center-mid", "right-center-mid", "right-mid",
+    "striker-1", "striker-2"
+  ],
+  "4-2-3-1": [
+    "goalkeeper",
+    "left-back", "left-center-back", "right-center-back", "right-back",
+    "cdm-1", "cdm-2",
+    "cam-left", "cam", "cam-right",
+    "striker"
+  ]
+};
+

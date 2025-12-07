@@ -10,6 +10,7 @@ export default function TeamHalf({
   onDrop,
   color = "#ffffff88",
   reverse = false,
+  onRemovePlayer,      // parent-controlled removal
 }) {
   const centerPull = 1.35;
   const topScale = 1.05;
@@ -24,22 +25,15 @@ export default function TeamHalf({
 
   return (
     <div
-      className={`pitch-half ${team === "top" ? "top-half" : "bottom-half"} ${
-        reverse ? "reverse" : ""
-      }`}
+      className={`pitch-half ${team === "top" ? "top-half" : "bottom-half"} ${reverse ? "reverse" : ""}`}
       onDrop={onDrop}
       onDragOver={(e) => e.preventDefault()}
     >
       {points.map((point, index) => {
         const playerName = assigned[index];
-        const playerObj = [...players, ...allPlayers].find(
-          (p) => p && p.name === playerName
-        );
+        const playerObj = [...players, ...allPlayers].find(p => p && p.name === playerName);
 
-        // Horizontal only
         const adjustedLeft = 50 + (point.xPercent - 50) * centerPull;
-
-        // Vertical (correct logic)
         let adjustedTop;
         if (team === "top") {
           adjustedTop = point.yPercent * topScale;
@@ -59,16 +53,25 @@ export default function TeamHalf({
             style={{ left: `${leftPct}%`, top: `${topPct}%` }}
           >
             {playerObj && (
-  <div className={`player-info-card ${team}`}>
-    <div className="info-content">
-      <strong>{playerObj.name}</strong>
-      <br />
-      {playerObj.position?.charAt(0)} — ⭐{playerObj.rating}
-    </div>
-  </div>
-)}
-
-
+              <div
+                className={`player-info-card ${team}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  console.log(`[TeamHalf] Clicked player:`, playerObj.name, "at index", index);
+                  if (onRemovePlayer) {
+                    onRemovePlayer(playerObj.name, index);
+                  }
+                }}
+              >
+                <div className="info-content">
+                  <strong>{playerObj.name}</strong>
+                  <br />
+                  {playerObj.position?.charAt(0)} — ⭐{playerObj.rating}
+                  <br />
+                  {/* <small>Click to remove</small> */}
+                </div>
+              </div>
+            )}
             <div
               className="player-dot"
               style={{ background: playerObj ? color : "#ffffff88" }}
