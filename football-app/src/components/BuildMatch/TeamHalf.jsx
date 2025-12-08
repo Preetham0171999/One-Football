@@ -68,7 +68,7 @@ export default function TeamHalf({
                   <br />
                   {playerObj.position?.charAt(0)} — ⭐{playerObj.rating}
                   <br />
-                  {/* <small>Click to remove</small> */}
+                  
                 </div>
               </div>
             )}
