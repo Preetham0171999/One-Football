@@ -1,40 +1,37 @@
 // utils/dragUtils.js
 import { buildTeamFromAssigned, getTeamRatings } from "./ratingUtils";
 
+/* ---------------- DRAG START ---------------- */
+
 export function handleDragStart(e, player) {
-  console.log("DragStart:", player);
-  e.dataTransfer.setData("player", JSON.stringify(player));
+  e.dataTransfer.setData("text/plain", JSON.stringify(player));
 }
 
+/* ---------------- DROP HANDLER FACTORY ---------------- */
+
 /**
- * Creates a drop handler for a team side (left/right)
- * All state is managed via parent setters
+ * Creates a drop handler for a team side (left / right)
+ * All state updates flow UP via setters
  */
 export function createHandleDrop({
   formationPoints,
   setAssigned,
   setPlayers,
+  setSubs,
+  side,
   playerList,
   formationRoles,
-  setTeamRating
+  setTeamRating,
 }) {
-  return function handleDrop(e) {
-    e.preventDefault();
+  return function handleDrop(e, player) {
+    // ⛔ safety guard
+    if (!e?.currentTarget || !player) return;
 
-    const rawData = e.dataTransfer.getData("player");
-    if (!rawData) {
-      console.warn("No data received on drop!");
-      return;
-    }
-
-    const player = JSON.parse(rawData);
-    console.log("Dropped player:", player);
-
+    /* ---------- FIND DROP POSITION ---------- */
     const rect = e.currentTarget.getBoundingClientRect();
     const dropX = ((e.clientX - rect.left) / rect.width) * 100;
     const dropY = ((e.clientY - rect.top) / rect.height) * 100;
 
-    // Find closest formation slot
     let closestIndex = null;
     let smallestDist = Infinity;
 
@@ -49,32 +46,51 @@ export function createHandleDrop({
       }
     });
 
-    if (closestIndex === null) {
-      console.warn("No suitable slot found for drop");
-      return;
-    }
+    if (closestIndex === null) return;
 
-    // Update assigned players and calculate team rating
+    /* ---------- ASSIGN / SWAP LOGIC ---------- */
     setAssigned(prev => {
-      const updatedAssigned = { ...prev, [closestIndex]: player.name };
+      const updated = { ...prev };
+      const existingPlayerName = prev[closestIndex];
 
+      // 🟡 Slot occupied → move old player to subs
+      if (existingPlayerName) {
+        const existingPlayer = playerList.find(
+          p => p.name === existingPlayerName
+        );
+
+        if (existingPlayer) {
+          setSubs(prevSubs => ({
+            ...prevSubs,
+            [side]: [...prevSubs[side], existingPlayer],
+          }));
+        }
+      }
+
+      // 🟢 Place new player
+      updated[closestIndex] = player.name;
+
+      // 🔢 Recalculate rating
       const { team } = buildTeamFromAssigned(
-        updatedAssigned,
+        updated,
         playerList,
         formationRoles
       );
 
-      const { average } = getTeamRatings(team);
-      setTeamRating(average);
+      setTeamRating(getTeamRatings(team).average);
 
-      return updatedAssigned;
+      return updated;
     });
 
-    // Remove from available players
-    setPlayers(prev => {
-      const updatedPlayers = prev.filter(p => p.name !== player.name);
-      console.log("Updated available players:", updatedPlayers);
-      return updatedPlayers;
-    });
+    /* ---------- REMOVE INCOMING PLAYER FROM LIST ---------- */
+    setPlayers(prev =>
+      prev.filter(p => p.name !== player.name)
+    );
+
+    /* ---------- REMOVE INCOMING PLAYER FROM SUBS (if any) ---------- */
+    setSubs(prevSubs => ({
+      ...prevSubs,
+      [side]: prevSubs[side].filter(p => p.name !== player.name),
+    }));
   };
 }

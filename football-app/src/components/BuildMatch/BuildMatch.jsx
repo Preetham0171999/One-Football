@@ -69,31 +69,41 @@ export default function BuildMatch() {
   }, [leftTeam, rightTeam]);
 
   // Fetch players for left/right teams
-  useEffect(() => {
-    if (leftTeam) {
-      fetch(`http://localhost:8000/players/${leftTeam}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setLeftPlayers(data.players || []);
-          setLeftAllPlayers(data.players || []);
-        });
-    }
-  }, [leftTeam]);
+useEffect(() => {
+  if (leftTeam) {
+    fetch(`http://localhost:8000/players/${leftTeam}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setLeftPlayers(data.players || []);
+        setLeftAllPlayers(data.players || []);
+      });
+  }
+}, [leftTeam]);
 
-  useEffect(() => {
-    if (rightTeam) {
-      fetch(`http://localhost:8000/players/${rightTeam}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setRightPlayers(data.players || []);
-          setRightAllPlayers(data.players || []);
-        });
-    }
-  }, [rightTeam]);
+useEffect(() => {
+  if (rightTeam) {
+    fetch(`http://localhost:8000/players/${rightTeam}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setRightPlayers(data.players || []);
+        setRightAllPlayers(data.players || []);
+      });
+  }
+}, [rightTeam]);
+
+
+
+
 
   // Formation coordinates
-  const leftCoords = useMemo(() => getFormationCoordinates(leftFormation), [leftFormation]);
-  const rightCoords = useMemo(() => getFormationCoordinates(rightFormation), [rightFormation]);
+  const leftCoords = useMemo(
+    () => getFormationCoordinates(leftFormation),
+    [leftFormation]
+  );
+  const rightCoords = useMemo(
+    () => getFormationCoordinates(rightFormation),
+    [rightFormation]
+  );
 
   const mirroredRightCoords = useMemo(
     () => rightCoords.map((p) => ({ ...p, yPercent: 100 - p.yPercent })),
@@ -107,7 +117,7 @@ export default function BuildMatch() {
         formationPoints: leftCoords,
         setAssigned: setLeftAssigned,
         setPlayers: setLeftPlayers,
-        playerList: [...leftAllPlayers, ...leftPlayers],
+        playerList: leftAllPlayers,
         formationRoles: getRoles(leftFormation),
         setTeamRating: setLeftTeamRating,
       }),
@@ -126,6 +136,23 @@ export default function BuildMatch() {
       }),
     [mirroredRightCoords, rightAllPlayers, rightPlayers, rightFormation]
   );
+
+  const memoAllPlayers = useMemo(
+  () => ({ left: leftAllPlayers, right: rightAllPlayers }),
+  [leftAllPlayers, rightAllPlayers]
+);
+
+const memoFormationPoints = useMemo(
+  () => ({
+    left: getFormationCoordinates(leftFormation),
+    right: getFormationCoordinates(rightFormation),
+  }),
+  [leftFormation, rightFormation]
+);
+
+
+
+
 
   // Prediction
   const handlePredict = async () => {
@@ -156,6 +183,18 @@ export default function BuildMatch() {
     setLoading(false);
   };
 
+          console.log("BUILD leftAllPlayers:", leftAllPlayers);
+console.log("BUILD rightAllPlayers:", rightAllPlayers);
+
+
+// const memoFormationRoles = useMemo(
+//   () => ({
+//     left: formationRoles[leftFormation],
+//     right: formationRoles[rightFormation],
+//   }),
+//   [leftFormation, rightFormation]
+// );
+
   return (
     <div className="build-match-container">
       <h1 className="match-title">⚔️ Build Match</h1>
@@ -177,13 +216,17 @@ export default function BuildMatch() {
         </div>
 
         {/* CENTER PITCH */}
+
         <div className="center-wrapper">
           <MatchPitch
             assigned={{ left: leftAssigned, right: rightAssigned }}
             players={{ left: leftPlayers, right: rightPlayers }}
-            allPlayers={{ left: leftAllPlayers, right: rightAllPlayers }}
-            formationPoints={{ left: leftCoords, right: rightCoords }}
-            formationRoles={{ left: getRoles(leftFormation), right: getRoles(rightFormation) }}
+            allPlayers={memoAllPlayers}
+            formationPoints={memoFormationPoints}
+            formationRoles={{
+              left: getRoles(leftFormation),
+              right: getRoles(rightFormation),
+            }}
             onDropLeft={leftHandleDrop}
             onDropRight={rightHandleDrop}
             setAssignedLeft={setLeftAssigned}

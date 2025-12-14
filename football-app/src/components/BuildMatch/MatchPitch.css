@@ -1,24 +1,15 @@
 .pitch-container.match-mode {
   position: relative;
-  width: 100%;
-  max-width: 480px;
-
+  width: 480px;
   aspect-ratio: 2 / 3;
-
-  margin: 20px auto;  /* 🔥 adds safe space above & below */
-  padding-top: 12px;  /* 🔥 internal safe zone for top GK */
-  padding-bottom: 12px;  /* 🔥 internal safe zone for bottom GK */
-
   background: #228b22;
   border: 3px solid white;
   border-radius: 8px;
-  overflow: hidden;
-
-
-  /* testing 
-  
-  */
-  
+  margin: 20px auto;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  box-sizing: border-box;
+  /* overflow removed so bench dots can be visible outside the pitch */
 }
 
 
@@ -104,3 +95,45 @@
 .team-half.reverse {
   flex-direction: column-reverse;
 }
+
+
+.pitch-wrapper {
+  display: flex;
+  justify-content: space-between; /* push left/right to edges */
+  align-items: flex-start;
+  width: 500px;   /* test width */
+  margin: 20px auto;
+}
+
+.subs-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.sub-dot {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #bbb;
+  border: 2px solid #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+
+
+.left-subs {
+  align-items: flex-end;
+}
+
+.right-subs {
+  align-items: flex-start;
+}
+
+
+

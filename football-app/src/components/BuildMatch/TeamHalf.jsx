@@ -1,39 +1,43 @@
-// src/components/TeamHalf.jsx
 import React from "react";
 
 export default function TeamHalf({
   team,
   points = [],
-  assigned = {},
-  players = [],
+  assigned = {}, // index → playerName
   allPlayers = [],
   onDrop,
+  onRemovePlayer,
   color = "#ffffff88",
   reverse = false,
-  onRemovePlayer,      // parent-controlled removal
 }) {
   const centerPull = 1.35;
   const topScale = 1.05;
   const bottomScale = 1.05;
   const bottomLiftPct = 6;
-  const minTop = 3;
-  const maxTop = 97;
-  const minLeft = 2;
-  const maxLeft = 98;
 
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
   return (
     <div
-      className={`pitch-half ${team === "top" ? "top-half" : "bottom-half"} ${reverse ? "reverse" : ""}`}
-      onDrop={onDrop}
+      className={`pitch-half ${team === "top" ? "top-half" : "bottom-half"}`}
       onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+
+        const raw = e.dataTransfer.getData("text/plain");
+        if (!raw) return;
+
+        const player = JSON.parse(raw);
+        onDrop?.(e, player, team); // pass EVENT + player
+      }}
     >
       {points.map((point, index) => {
         const playerName = assigned[index];
-        const playerObj = [...players, ...allPlayers].find(p => p && p.name === playerName);
+        const player =
+          playerName && allPlayers.find((p) => p.name === playerName);
 
         const adjustedLeft = 50 + (point.xPercent - 50) * centerPull;
+
         let adjustedTop;
         if (team === "top") {
           adjustedTop = point.yPercent * topScale;
@@ -43,8 +47,8 @@ export default function TeamHalf({
             : 50 + (50 - point.yPercent) * bottomScale - bottomLiftPct;
         }
 
-        const leftPct = clamp(adjustedLeft, minLeft, maxLeft);
-        const topPct = clamp(adjustedTop, minTop, maxTop);
+        const leftPct = clamp(adjustedLeft, 2, 98);
+        const topPct = clamp(adjustedTop, 3, 97);
 
         return (
           <div
@@ -52,29 +56,28 @@ export default function TeamHalf({
             className="player-dot-wrapper"
             style={{ left: `${leftPct}%`, top: `${topPct}%` }}
           >
-            {playerObj && (
+            {player && (
               <div
                 className={`player-info-card ${team}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log(`[TeamHalf] Clicked player:`, playerObj.name, "at index", index);
-                  if (onRemovePlayer) {
-                    onRemovePlayer(playerObj.name, index);
-                  }
-                }}
+                // onClick={(e) => {
+                //   e.stopPropagation();
+                //   onRemovePlayer?.(player.name, index);
+                // }}
+
+                onClick={() => onRemovePlayer(player.name, index)}
+
               >
-                <div className="info-content">
-                  <strong>{playerObj.name}</strong>
-                  <br />
-                  {playerObj.position?.charAt(0)} — ⭐{playerObj.rating}
-                  <br />
-                  
-                </div>
+                <strong>{player.name}</strong>
+                <br />
+                {player.position?.charAt(0)} — ⭐{player.rating}
               </div>
             )}
+
             <div
               className="player-dot"
-              style={{ background: playerObj ? color : "#ffffff88" }}
+              style={{
+                background: player ? color : "#ffffff88",
+              }}
             />
           </div>
         );
