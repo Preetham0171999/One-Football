@@ -1,3 +1,12 @@
+.pitch-wrapper {
+  position: relative; /* anchor for subs */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 500px;
+  margin: 20px auto;
+}
+
 .pitch-container.match-mode {
   position: relative;
   width: 480px;
@@ -5,26 +14,23 @@
   background: #228b22;
   border: 3px solid white;
   border-radius: 8px;
-  margin: 20px auto;
   padding-top: 12px;
   padding-bottom: 12px;
   box-sizing: border-box;
-  /* overflow removed so bench dots can be visible outside the pitch */
+  overflow: visible; /* show subs outside pitch */
 }
 
-
-/* halves */
+/* Half-pitch */
 .pitch-half {
   position: absolute;
   width: 100%;
   height: 50%;
   left: 0;
 }
-
 .top-half { top: 0; }
 .bottom-half { bottom: 0; }
 
-/* center line & circle */
+/* Center line / circle */
 .center-line {
   position: absolute;
   top: 50%;
@@ -32,9 +38,8 @@
   width: 100%;
   height: 2px;
   background: white;
-  transform: translateY(-1px);
+  transform: translateY(-50%);
 }
-
 .center-circle {
   position: absolute;
   top: 50%;
@@ -46,7 +51,7 @@
   transform: translate(-50%, -50%);
 }
 
-/* Penalty Boxes */
+/* Penalty boxes */
 .penalty-box {
   position: absolute;
   width: 70%;
@@ -55,23 +60,17 @@
   border: 2px solid white;
   pointer-events: none;
 }
-
 .top-box { top: 0; }
 .bottom-box { bottom: 0; }
 
-/* player styling */
-.player-dot-wrapper {
-  position: absolute;
-  transform: translate(-50%, -50%);
-}
-
+/* Player */
+.player-dot-wrapper { position: absolute; transform: translate(-50%, -50%); }
 .player-dot {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: px solid #fff;
+  border: 1px solid #fff;
 }
-
 .player-info-card {
   position: absolute;
   top: -45px;
@@ -81,35 +80,45 @@
   font-size: 12px;
   border-radius: 6px;
   white-space: nowrap;
-  
 }
 
-
-.team-half {
+/* Subs */
+/* LEFT SUBS — position left outside pitch */
+.left-subs {
+  position: absolute;
+  left: -100px; /* outside pitch */
+  top: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 22px;
-}
-
-.team-half.reverse {
-  flex-direction: column-reverse;
-}
-
-
-.pitch-wrapper {
-  display: flex;
-  justify-content: space-between; /* push left/right to edges */
-  align-items: flex-start;
-  width: 500px;   /* test width */
-  margin: 20px auto;
-}
-
-.subs-row {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   gap: 10px;
+}
+
+/* RIGHT SUBS — position right outside pitch */
+.right-subs {
+  position: absolute;
+  right: -100px; /* outside pitch */
+  bottom: 0;      /* start from bottom for right team */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Rest of sub-item, sub-dot, sub-name styling remains unchanged */
+.sub-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: grab;
+  user-select: none;
+}
+
+.sub-item:active {
+  cursor: grabbing;
+}
+
+.sub-icon {
+  font-size: 25px;
+  opacity: 0.7;
 }
 
 .sub-dot {
@@ -122,18 +131,13 @@
   justify-content: center;
   align-items: center;
   font-size: 14px;
-  cursor: pointer;
 }
 
-
-
-.left-subs {
-  align-items: flex-end;
+.sub-name {
+  font-size: 12px;
+  white-space: nowrap;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.9;
 }
-
-.right-subs {
-  align-items: flex-start;
-}
-
-
-
