@@ -21,18 +21,25 @@ export default function MatchPitch({
   const [subs, setSubs] = useState({ left: [], right: [] });
 
   // Reset pitch & subs when team changes
-  useEffect(() => {
-    if (allPlayers.left?.length) {
-      setAssignedLeft({});
-      setPlayersLeft(allPlayers.left);
-      setSubs((prev) => ({ ...prev, left: [] }));
-    }
-    if (allPlayers.right?.length) {
-      setAssignedRight({});
-      setPlayersRight(allPlayers.right);
-      setSubs((prev) => ({ ...prev, right: [] }));
-    }
-  }, [allPlayers.left, allPlayers.right]);
+// LEFT team reset — runs ONLY when left team changes
+useEffect(() => {
+  if (!allPlayers.left?.length) return;
+
+  setAssignedLeft({});
+  setPlayersLeft(allPlayers.left);
+  setSubs((prev) => ({ ...prev, left: [] }));
+}, [allPlayers.left]);
+
+
+// RIGHT team reset — runs ONLY when right team changes
+useEffect(() => {
+  if (!allPlayers.right?.length) return;
+
+  setAssignedRight({});
+  setPlayersRight(allPlayers.right);
+  setSubs((prev) => ({ ...prev, right: [] }));
+}, [allPlayers.right]);
+
 
   // Drop handlers
  const onDropLeft = useMemo(

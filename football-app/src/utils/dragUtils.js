@@ -1,18 +1,10 @@
 // utils/dragUtils.js
 import { buildTeamFromAssigned, getTeamRatings } from "./ratingUtils";
 
-/* ---------------- DRAG START ---------------- */
-
 export function handleDragStart(e, player) {
   e.dataTransfer.setData("text/plain", JSON.stringify(player));
 }
 
-/* ---------------- DROP HANDLER FACTORY ---------------- */
-
-/**
- * Creates a drop handler for a team side (left / right)
- * All state updates flow UP via setters
- */
 export function createHandleDrop({
   formationPoints,
   setAssigned,
@@ -24,13 +16,17 @@ export function createHandleDrop({
   setTeamRating,
 }) {
   return function handleDrop(e, player) {
-    // ⛔ safety guard
     if (!e?.currentTarget || !player) return;
 
-    /* ---------- FIND DROP POSITION ---------- */
     const rect = e.currentTarget.getBoundingClientRect();
-    const dropX = ((e.clientX - rect.left) / rect.width) * 100;
-    const dropY = ((e.clientY - rect.top) / rect.height) * 100;
+
+    let dropX = ((e.clientX - rect.left) / rect.width) * 100;
+    let dropY = ((e.clientY - rect.top) / rect.height) * 100;
+
+    // 🔥 FIX: normalize Y for bottom team
+    if (side === "right") {
+      dropY = 100 - dropY;
+    }
 
     let closestIndex = null;
     let smallestDist = Infinity;
@@ -48,29 +44,36 @@ export function createHandleDrop({
 
     if (closestIndex === null) return;
 
-    /* ---------- ASSIGN / SWAP LOGIC ---------- */
-    setAssigned(prev => {
+    setAssigned((prev) => {
       const updated = { ...prev };
       const existingPlayerName = prev[closestIndex];
 
-      // 🟡 Slot occupied → move old player to subs
-      if (existingPlayerName) {
-        const existingPlayer = playerList.find(
-          p => p.name === existingPlayerName
+      setSubs((prevSubs) => {
+        let next = prevSubs[side].filter(
+          (p) => p.name !== player.name
         );
 
-        if (existingPlayer) {
-          setSubs(prevSubs => ({
-            ...prevSubs,
-            [side]: [...prevSubs[side], existingPlayer],
-          }));
-        }
-      }
+        if (
+          existingPlayerName &&
+          existingPlayerName !== player.name
+        ) {
+          const existingPlayer = playerList.find(
+            (p) => p.name === existingPlayerName
+          );
 
-      // 🟢 Place new player
+          if (
+            existingPlayer &&
+            !next.some((p) => p.name === existingPlayer.name)
+          ) {
+            next = [...next, existingPlayer];
+          }
+        }
+
+        return { ...prevSubs, [side]: next };
+      });
+
       updated[closestIndex] = player.name;
 
-      // 🔢 Recalculate rating
       const { team } = buildTeamFromAssigned(
         updated,
         playerList,
@@ -78,19 +81,11 @@ export function createHandleDrop({
       );
 
       setTeamRating(getTeamRatings(team).average);
-
       return updated;
     });
 
-    /* ---------- REMOVE INCOMING PLAYER FROM LIST ---------- */
-    setPlayers(prev =>
-      prev.filter(p => p.name !== player.name)
+    setPlayers((prev) =>
+      prev.filter((p) => p.name !== player.name)
     );
-
-    /* ---------- REMOVE INCOMING PLAYER FROM SUBS (if any) ---------- */
-    setSubs(prevSubs => ({
-      ...prevSubs,
-      [side]: prevSubs[side].filter(p => p.name !== player.name),
-    }));
   };
 }
