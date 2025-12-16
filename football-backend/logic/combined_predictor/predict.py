@@ -1,6 +1,7 @@
 import os
 import joblib
 import pandas as pd
+from logic.formation_strength.predict import get_formation_strength
 
 # -----------------------------
 # Paths
@@ -26,7 +27,7 @@ history_winner_encoder = joblib.load(history_winner_encoder_path)
 
 strength_model = joblib.load(strength_model_path)
 strength_result_encoder = joblib.load(strength_result_encoder_path)
-strength_features = joblib.load(strength_feature_path)   # <-- FIXED
+strength_features = joblib.load(strength_feature_path)
 
 # -----------------------------
 # Predict functions
@@ -38,61 +39,88 @@ def predict_history(team_a, team_b):
     except:
         return None
 
-    X_input = pd.DataFrame([[a_enc, b_enc]], columns=["Team_A_enc", "Team_B_enc"])
-    pred = history_model.predict(X_input)[0]
+    X = pd.DataFrame([[a_enc, b_enc]], columns=["Team_A_enc", "Team_B_enc"])
+    pred = history_model.predict(X)[0]
     return history_winner_encoder.inverse_transform([pred])[0]
 
 
-def predict_strength(team_name, player_dict):
-    row = []
-    for col in strength_features:
-        row.append(player_dict.get(col, 0))
-
-    X_input = pd.DataFrame([row], columns=strength_features)
-    pred = strength_model.predict(X_input)[0]
+def predict_strength(player_dict):
+    row = [player_dict.get(col, 0) for col in strength_features]
+    X = pd.DataFrame([row], columns=strength_features)
+    pred = strength_model.predict(X)[0]
     return strength_result_encoder.inverse_transform([pred])[0]
 
 
-def combine_predictions(team_a, team_b, left_playing_11, right_playing_11, left_rating, right_rating):
+# -----------------------------
+# Combined Prediction
+# -----------------------------
+def combine_predictions(
+    team_a,
+    team_b,
+    left_formation,
+    right_formation,
+    left_playing_11,
+    right_playing_11,
+    left_rating,
+    right_rating
+):
+
+    votes = {"Win_A": 0.0, "Win_B": 0.0, "Draw": 0.0}
+
+    # 1️⃣ Historical matchup
     hist_pred = predict_history(team_a, team_b)
-
-    left_strength = predict_strength(team_a, left_playing_11)
-    right_strength = predict_strength(team_b, right_playing_11)
-
-    votes = {"Win_A": 0, "Win_B": 0, "Draw": 0}
-
-    # History
     if hist_pred == team_a:
-        votes["Win_A"] += 0.4
+        votes["Win_A"] += 0.35
     elif hist_pred == team_b:
-        votes["Win_B"] += 0.4
+        votes["Win_B"] += 0.35
     else:
-        votes["Draw"] += 0.4
+        votes["Draw"] += 0.35
 
-    # Left team strength
+    # 2️⃣ Player strength (ML model)
+    left_strength = predict_strength(left_playing_11)
+    right_strength = predict_strength(right_playing_11)
+
     if left_strength == "Win":
-        votes["Win_A"] += 0.3
+        votes["Win_A"] += 0.25
     elif left_strength == "Loss":
-        votes["Win_B"] += 0.3
+        votes["Win_B"] += 0.25
     else:
-        votes["Draw"] += 0.3
+        votes["Draw"] += 0.25
 
-    # Right team strength
     if right_strength == "Win":
-        votes["Win_B"] += 0.3
+        votes["Win_B"] += 0.25
     elif right_strength == "Loss":
-        votes["Win_A"] += 0.3
+        votes["Win_A"] += 0.25
     else:
-        votes["Draw"] += 0.3
+        votes["Draw"] += 0.25
 
-    # Ratings
-    diff = left_rating - right_rating
-    if diff > 0:
-        votes["Win_A"] += 0.2
-    elif diff < 0:
-        votes["Win_B"] += 0.2
+    # 3️⃣ Squad ratings
+    rating_diff = left_rating - right_rating
+    if rating_diff > 0:
+        votes["Win_A"] += 0.15
+    elif rating_diff < 0:
+        votes["Win_B"] += 0.15
     else:
-        votes["Draw"] += 0.2
+        votes["Draw"] += 0.15
 
+    # 4️⃣ Formation strength (NEW 🔥)
+    left_form_score = get_formation_strength(team_a, left_formation)
+    right_form_score = get_formation_strength(team_b, right_formation)
+
+    if left_form_score > right_form_score:
+        votes["Win_A"] += 0.20
+    elif right_form_score > left_form_score:
+        votes["Win_B"] += 0.20
+    else:
+        votes["Draw"] += 0.20
+
+    # -----------------------------
+    # Final decision
+    # -----------------------------
     winner = max(votes, key=votes.get)
-    return team_a if winner == "Win_A" else team_b if winner == "Win_B" else "Draw"
+
+    return (
+        team_a if winner == "Win_A"
+        else team_b if winner == "Win_B"
+        else "Draw"
+    )

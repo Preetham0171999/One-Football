@@ -162,17 +162,21 @@ const memoFormationPoints = useMemo(
     const payload = {
       team_a: leftTeam,
       team_b: rightTeam,
+        left_formation: leftFormation,     // 🔥 ADD
+  right_formation: rightFormation, 
       left_playing_11: leftAssigned,
       right_playing_11: rightAssigned,
       left_rating: leftTeamRating,
       right_rating: rightTeamRating,
     };
+    console.log("Prediction payload:", payload);
 
     try {
       const res = await fetch("http://localhost:8000/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        
       });
       const data = await res.json();
       setPrediction(data.winner || "Unknown");

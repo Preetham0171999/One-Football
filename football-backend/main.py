@@ -52,10 +52,14 @@ teamdata_file = "data/teamdata.json"
 class Match(BaseModel):
     team_a: str
     team_b: str
+    left_formation: str      # 👈 added
+    right_formation: str     # 👈 added
     left_playing_11: dict
     right_playing_11: dict
     left_rating: float
     right_rating: float
+
+
 
 
 
@@ -65,6 +69,8 @@ def predict(match: Match):
         result = combine_predictions(
             match.team_a,
             match.team_b,
+            match.left_formation,      # 👈 pass through
+            match.right_formation,     # 👈 pass through
             match.left_playing_11,
             match.right_playing_11,
             match.left_rating,
@@ -74,6 +80,8 @@ def predict(match: Match):
         return {"error": str(e)}
 
     return {"winner": result}
+
+
 
 
 
