@@ -3,15 +3,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from logic.combined_predictor.predict import combine_predictions
-
-
+from auth.routes import router as auth_router
 
 
 app = FastAPI()
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # for dev
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -55,73 +59,9 @@ def predict(match: Match):
 
 
 
-# # 1️⃣ Get all teams
-# @app.get("/teams")
-# def get_teams():
-#     return {"teams": teams_data}
-
-# 2️⃣ Get logo for a team
-# @app.get("/logo/{team_name}")
-# def get_logo(team_name: str):
-#     return {"team": team_name, "logo": logos_data.get(team_name, None)}
 
 
-
-# @app.get("/players/{team_name}")
-# def get_players(team_name: str):
-#     players = players_data.get(team_name, [])
-#     return {"team": team_name, "players": players}
-
-
-# with open(metrics_file) as f:
-#     metrics_data = json.load(f)
-
-# @app.get("/club-metrics/{team_name}")
-# def get_metrics(team_name: str):
-#     return {
-#         "team": team_name,
-#         "metrics": metrics_data.get(team_name, [])
-#     }
-    
-    
-# Load JSON at startup
-# with open(history_file) as f:
-#     history_data = json.load(f)
-    
-# @app.get("/club-history/{team_name}")
-# def get_club_history(team_name: str):
-
-#     team_name_lower = team_name.lower()
-
-#     if team_name_lower in history_data:
-#         return {"history": history_data[team_name_lower]}
-#     return {"history": []}
-
-
-
-
-# 4️⃣ Get player rating (optional)
-# @app.get("/rating/{player_name}")
-# def get_rating(player_name: str):
-#     # later fetch dynamic ratings from real APIs
-#     return {"player": player_name, "rating": 80}  # static for now
-
-
-
-# with open(teamdata_file) as f:
-#     teamdata = json.load(f)
-
-
-# @app.get("/team-info/{team_name}")
-# def get_team_info(team_name: str):
-#     team_name_lower = team_name.lower()
-
-#     if team_name_lower in teamdata:
-#         return teamdata[team_name_lower]
-#     return {}
-
-
-
+app.include_router(auth_router)
 
 from database.db import SessionLocal
 from sqlalchemy.orm import Session
