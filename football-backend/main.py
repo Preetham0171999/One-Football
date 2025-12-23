@@ -77,22 +77,24 @@ def get_db():
         
         
 from database.models import Team
+from auth.security import get_current_user
+
 
 @app.get("/teams")
-def get_teams(db: Session = Depends(get_db)):
+def get_teams(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     teams = db.query(Team).all()
     return {"teams": [t.name for t in teams]}
 
 
 @app.get("/logo/{team_name}")
-def get_logo(team_name: str, db: Session = Depends(get_db)):
+def get_logo(team_name: str, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     team = db.query(Team).filter(Team.name == team_name).first()
     return {"team": team_name, "logo": team.logo if team else None}
 
 from database.models import Player
 
 @app.get("/players/{team_name}")
-def get_players(team_name: str, db: Session = Depends(get_db)):
+def get_players(team_name: str, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     players = db.query(Player).filter(Player.team == team_name).all()
     return {
         "team": team_name,
@@ -110,7 +112,7 @@ def get_players(team_name: str, db: Session = Depends(get_db)):
 from database.models import ClubMetric
 
 @app.get("/club-metrics/{team_name}")
-def get_metrics(team_name: str, db: Session = Depends(get_db)):
+def get_metrics(team_name: str, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     row = db.query(ClubMetric).filter(ClubMetric.team == team_name).first()
     return {"team": team_name, "metrics": row.metrics if row else []}
 
@@ -118,7 +120,7 @@ def get_metrics(team_name: str, db: Session = Depends(get_db)):
 from database.models import ClubHistory
 
 @app.get("/club-history/{team_name}")
-def get_club_history(team_name: str, db: Session = Depends(get_db)):
+def get_club_history(team_name: str, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     row = db.query(ClubHistory).filter(
         ClubHistory.team == team_name.lower()
     ).first()

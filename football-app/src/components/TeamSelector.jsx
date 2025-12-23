@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { isAuthenticated, getToken } from "../utils/auth";
+import { authFetch } from "../utils/api";
 
 export default function TeamSelector() {
   const navigate = useNavigate();
@@ -25,11 +26,19 @@ export default function TeamSelector() {
   const [showMoreInfo, setShowMoreInfo] = useState(false);
 
   useEffect(() => {
+    // Redirect to login if not authenticated
+    if (!isAuthenticated()) {
+      navigate("/login");
+      return;
+    }
+
     if (!selectedTeam) return;
 
-    fetch(`http://localhost:8000/team-info/${selectedTeam}`)
+    const token = getToken();
+    authFetch(`/team-info/${selectedTeam}`)
       .then((res) => res.json())
-      .then((data) => setTeamInfo(data));
+      .then((data) => setTeamInfo(data))
+      .catch((err) => console.error("team-info error:", err));
   }, [selectedTeam]);
 
   const [moreInfoVisible, setMoreInfoVisible] = useState(false);
@@ -47,9 +56,13 @@ export default function TeamSelector() {
   }, [selectedTeam]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/teams")
+    if (!isAuthenticated()) return;
+
+    const token = getToken();
+    authFetch(`/teams`)
       .then((res) => res.json())
-      .then((data) => setTeams(data.teams));
+      .then((data) => setTeams(data.teams))
+      .catch((err) => console.error("teams fetch error:", err));
   }, []);
 
   useEffect(() => {
@@ -58,23 +71,18 @@ export default function TeamSelector() {
     const fetchData = async () => {
       try {
         // Fetch players
-        const playersRes = await fetch(
-          `http://localhost:8000/players/${selectedTeam}`
-        );
+        const token = getToken();
+        const playersRes = await authFetch(`/players/${selectedTeam}`);
         const playersData = await playersRes.json();
         setPlayers(playersData.players);
 
         // Fetch metrics
-        const metricsRes = await fetch(
-          `http://localhost:8000/club-metrics/${selectedTeam}`
-        );
+        const metricsRes = await authFetch(`/club-metrics/${selectedTeam}`);
         const metricsData = await metricsRes.json();
         setMetrics(metricsData.metrics);
 
         // Fetch history
-        const historyRes = await fetch(
-          `http://localhost:8000/club-history/${selectedTeam}`
-        );
+        const historyRes = await authFetch(`/club-history/${selectedTeam}`);
         const historyData = await historyRes.json();
         setHistory(historyData.history);
       } catch (error) {
@@ -88,9 +96,10 @@ export default function TeamSelector() {
   useEffect(() => {
     if (!selectedTeam) return;
 
-    fetch(`http://localhost:8000/logo/${selectedTeam}`)
+    authFetch(`/logo/${selectedTeam}`)
       .then((res) => res.json())
-      .then((data) => setLogo(data.logo));
+      .then((data) => setLogo(data.logo))
+      .catch((err) => console.error("logo fetch error:", err));
   }, [selectedTeam]);
 
   return (

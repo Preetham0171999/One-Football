@@ -1,4 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { isAuthenticated } from "../../utils/auth";
+import { authFetch } from "../../utils/api";
 import PlayerList from "../../components/PlayerList";
 import MatchPitch from "./MatchPitch";
 import LineupControls from "../../components/LineupControls";
@@ -51,43 +54,52 @@ export default function BuildMatch() {
 
   // Fetch teams and logos
   useEffect(() => {
-    fetch("http://localhost:8000/teams")
+    if (!isAuthenticated()) return;
+
+    authFetch(`/teams`)
       .then((res) => res.json())
-      .then((data) => setTeams(data.teams));
+      .then((data) => setTeams(data.teams))
+      .catch((err) => console.error("teams fetch error:", err));
 
     if (leftTeam) {
-      fetch(`http://localhost:8000/logo/${leftTeam}`)
+      authFetch(`/logo/${leftTeam}`)
         .then((res) => res.json())
-        .then((data) => setLeftLogo(data.logo));
+        .then((data) => setLeftLogo(data.logo))
+        .catch((err) => console.error("left logo error:", err));
     }
 
     if (rightTeam) {
-      fetch(`http://localhost:8000/logo/${rightTeam}`)
+      authFetch(`/logo/${rightTeam}`)
         .then((res) => res.json())
-        .then((data) => setRightLogo(data.logo));
+        .then((data) => setRightLogo(data.logo))
+        .catch((err) => console.error("right logo error:", err));
     }
   }, [leftTeam, rightTeam]);
 
   // Fetch players for left/right teams
 useEffect(() => {
   if (leftTeam) {
-    fetch(`http://localhost:8000/players/${leftTeam}`)
+    if (!isAuthenticated()) return;
+    authFetch(`/players/${leftTeam}`)
       .then((res) => res.json())
       .then((data) => {
         setLeftPlayers(data.players || []);
         setLeftAllPlayers(data.players || []);
-      });
+      })
+      .catch((err) => console.error("left players error:", err));
   }
 }, [leftTeam]);
 
 useEffect(() => {
   if (rightTeam) {
-    fetch(`http://localhost:8000/players/${rightTeam}`)
+    if (!isAuthenticated()) return;
+    authFetch(`/players/${rightTeam}`)
       .then((res) => res.json())
       .then((data) => {
         setRightPlayers(data.players || []);
         setRightAllPlayers(data.players || []);
-      });
+      })
+      .catch((err) => console.error("right players error:", err));
   }
 }, [rightTeam]);
 
@@ -172,11 +184,10 @@ const memoFormationPoints = useMemo(
     console.log("Prediction payload:", payload);
 
     try {
-      const res = await fetch("http://localhost:8000/predict", {
+      const res = await authFetch(`/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-        
       });
       const data = await res.json();
       setPrediction(data.winner || "Unknown");

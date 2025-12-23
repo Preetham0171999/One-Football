@@ -1,4 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { isAuthenticated } from "../utils/auth";
+import { authFetch } from "../utils/api";
 import PlayerList from "../components/PlayerList";
 import Pitch from "../components/Pitch";
 import LineupControls from "../components/LineupControls";
@@ -7,6 +10,7 @@ import { getFormationCoordinates } from "../utils/formationUtils";
 import "./TeamBuilder.css";
 
 export default function TeamBuilder() {
+  const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState("");
   const [players, setPlayers] = useState([]);
@@ -42,7 +46,13 @@ export default function TeamBuilder() {
 
   // Load teams
   useEffect(() => {
-    fetch("http://localhost:8000/teams")
+    if (!isAuthenticated()) {
+      // redirect to login if not authenticated
+      navigate("/login");
+      return;
+    }
+
+    authFetch(`/teams`)
       .then((res) => res.json())
       .then((data) => setTeams(data.teams))
       .catch((err) => console.error("TEAMS API ERROR:", err));
@@ -52,7 +62,8 @@ export default function TeamBuilder() {
   useEffect(() => {
     if (!selectedTeam) return;
 
-    fetch(`http://localhost:8000/players/${selectedTeam}`)
+    if (!isAuthenticated()) return;
+    authFetch(`/players/${selectedTeam}`)
       .then((res) => res.json())
       .then((data) => {
         setPlayers(data.players || []);
@@ -94,7 +105,7 @@ export default function TeamBuilder() {
     });
 
     try {
-      const res = await fetch("http://localhost:8000/predict", {
+      const res = await authFetch(`/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
