@@ -2,7 +2,9 @@
 /* Page background */
 .auth-page {
   min-height: 100vh;
+   width: 100vw;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -43,6 +45,24 @@
   box-shadow: 0 0 0 2px rgba(44, 83, 100, 0.15);
 }
 
+/* Light tints for inputs: subtle highlight on focus, and a
+   pale yellow when the user has entered text (keeps placeholder shown behavior).
+   Uses :not(:placeholder-shown) so inputs must have a placeholder attribute. */
+.auth-card input {
+  background: #ffffff; /* default on white card */
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.auth-card input:focus {
+  background: #fffef6; /* very light warm tint on focus */
+  border-color: #ffd700; /* yellow accent */
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.06);
+}
+
+.auth-card input:not(:placeholder-shown) {
+  background: #fff9e6; /* pale yellow when input has content */
+}
+
 /* Button */
 .auth-card button {
   width: 100%;
@@ -70,6 +90,32 @@
   cursor: not-allowed;
 }
 
+/* Keep submit button sizing/design but use yellow primary color when
+   the submit uses the auth-switch class (compact switch buttons use
+   .auth-switch.btn-primary). This preserves width/padding from
+   .auth-card button while changing color only. */
+.auth-card button.auth-switch {
+  background: #ffd700;
+  color: #000;
+  border: none;
+}
+
+.auth-card button.auth-switch:hover {
+  background: #ffea69;
+}
+
+/* Full-width primary variant when used inside the auth card (submit buttons) */
+.auth-card button.btn-primary {
+  width: 100%;
+  background: #ffd700;
+  color: #000;
+  border: none;
+}
+
+.auth-card button.btn-primary:hover {
+  background: #ffea69;
+}
+
 /* Error message */
 .auth-error {
   margin-top: 12px;
@@ -94,3 +140,75 @@
 .auth-footer a:hover {
   text-decoration: underline;
 }
+
+/* Footer note and switch button */
+.auth-note {
+  margin: 0 0 8px;
+  color: #e6f3f5;
+  font-size: 13px;
+}
+
+.auth-switch {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.08s;
+}
+
+.auth-switch:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+/* When auth-switch is used with the shared primary button style,
+   keep it compact (no full-width) and use the yellow primary color. */
+.auth-switch.btn-primary {
+  width: auto;
+  background: #ffd700;
+  color: #000;
+  border: none;
+}
+
+.auth-switch.btn-primary:hover {
+  background: #ffea69;
+}
+
+/* Static stadium background for auth pages */
+.auth-page::before,
+.bg-panel::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+
+  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRDgmeaItJfLxB2Kl-JZ_vz7op2HbWJDePfg&s");
+  background-size: cover;
+  background-position: center;
+
+  /* cinematic dark overlay */
+  filter: brightness(0.38) saturate(0.9);
+}
+
+/* Soccer ball lying on the pitch – right side */
+/* .auth-page::after,
+.bg-panel::after {
+  content: "";
+  position: fixed;
+  right: 6%;
+  bottom: 8%;
+
+  width: 240px;
+  height: 240px;
+  z-index: -1;
+
+  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRDgmeaItJfLxB2Kl-JZ_vz7op2HbWJDePfg&s");
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  opacity: 0.85;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.45));
+} */

@@ -7,7 +7,7 @@ body {
 }
 
 /* Bigger responsive container */
-.selector-container {
+.selector-container, .bg-panel {
   max-width: 500px;
   margin: 3rem auto;
   padding: 2rem;
@@ -305,7 +305,7 @@ body {
   z-index: 9999;
 }
 
-.more-info-btn {
+.more-info-btn, .btn-primary {
   width: 100%;
   padding: 0.8rem;
   font-size: 1.1rem;
@@ -318,7 +318,7 @@ body {
   transition: 0.3s ease;
 }
 
-.more-info-btn:hover {
+.more-info-btn:hover, .btn-primary:hover {
   background: #ffea69;
   transform: scale(1.05);
 }

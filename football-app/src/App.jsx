@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
+import Dashboard from "./pages/Dashboard";
 import { Navigate } from "react-router-dom";
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
 
         <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
         <Route
           path="/team"
