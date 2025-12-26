@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: football-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: football
+    volumes:
+      - football_db_data:/var/lib/postgresql/data
+    networks:
+      - football-net
+    ports:
+      - "5432:5432"
+
+  backend:
+    image: preethamkenganal/football-backend:backend
+    container_name: football-backend
+    depends_on:
+      - db
+    networks:
+      - football-net
+    ports:
+      - "8000:8000"
+
+  frontend:
+    image: preethamkenganal/football-backend:frontend
+    container_name: football-app
+    ports:
+      - "5173:80"
+
+networks:
+  football-net:
+
+volumes:
+  football_db_data:
