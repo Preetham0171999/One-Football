@@ -44,8 +44,12 @@ A web-based football analytics platform that allows users to view team details, 
 ---
 
 ## ⚡ Screenshots
+<img width="1899" height="909" alt="image" src="https://github.com/user-attachments/assets/d1b78590-effc-4e6b-a590-e02354dd72f1" />
+
 <img width="1902" height="891" alt="Screenshot 2025-12-15 134836" src="https://github.com/user-attachments/assets/769cc30c-f8a4-40f0-a97d-5159cec81728" />
-<img width="1906" height="893" alt="Screenshot 2025-12-15 134731" src="https://github.com/user-attachments/assets/9ab9c913-2d3a-47db-ae64-c7b71595a32f" />
+<img width="1058" height="857" alt="image" src="https://github.com/user-attachments/assets/e913fcd1-09b4-4c60-85e6-ddc1177b76fa" />
+<img width="1909" height="989" alt="image" src="https://github.com/user-attachments/assets/db13ec8e-7127-4005-b1c8-72b60f783633" />
+
 
 ### 1. Install Dependencies
 ```bash
