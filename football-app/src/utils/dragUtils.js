@@ -23,7 +23,7 @@ export function createHandleDrop({
     let dropX = ((e.clientX - rect.left) / rect.width) * 100;
     let dropY = ((e.clientY - rect.top) / rect.height) * 100;
 
-    // 🔥 FIX: normalize Y for bottom team
+    // ✅ Only flip Y if side is explicitly "right"
     if (side === "right") {
       dropY = 100 - dropY;
     }
@@ -48,29 +48,32 @@ export function createHandleDrop({
       const updated = { ...prev };
       const existingPlayerName = prev[closestIndex];
 
-      setSubs((prevSubs) => {
-        let next = prevSubs[side].filter(
-          (p) => p.name !== player.name
-        );
-
-        if (
-          existingPlayerName &&
-          existingPlayerName !== player.name
-        ) {
-          const existingPlayer = playerList.find(
-            (p) => p.name === existingPlayerName
+      // ✅ Only manage subs if setSubs + side exist
+      if (setSubs && side) {
+        setSubs((prevSubs) => {
+          let next = prevSubs[side].filter(
+            (p) => p.name !== player.name
           );
 
           if (
-            existingPlayer &&
-            !next.some((p) => p.name === existingPlayer.name)
+            existingPlayerName &&
+            existingPlayerName !== player.name
           ) {
-            next = [...next, existingPlayer];
-          }
-        }
+            const existingPlayer = playerList.find(
+              (p) => p.name === existingPlayerName
+            );
 
-        return { ...prevSubs, [side]: next };
-      });
+            if (
+              existingPlayer &&
+              !next.some((p) => p.name === existingPlayer.name)
+            ) {
+              next = [...next, existingPlayer];
+            }
+          }
+
+          return { ...prevSubs, [side]: next };
+        });
+      }
 
       updated[closestIndex] = player.name;
 
@@ -89,3 +92,4 @@ export function createHandleDrop({
     );
   };
 }
+

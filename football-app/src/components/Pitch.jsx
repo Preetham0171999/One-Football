@@ -13,13 +13,25 @@ export default function Pitch({
   return (
     <div
       className="pitch-container"
-      onDrop={onDrop}
+      onDrop={(e) => {
+        e.preventDefault();
+        const raw = e.dataTransfer.getData("text/plain");
+        let player = null;
+        try {
+          player = raw ? JSON.parse(raw) : null;
+        } catch (err) {
+          console.error("Invalid drag payload:", err);
+        }
+
+        // call provided handler with event + player object
+        onDrop?.(e, player);
+      }}
       onDragOver={(e) => e.preventDefault()}
     >
-      <div className="penalty-box top"></div>
+      <div className="penalty-box left"></div>
       <div className="center-line"></div>
       <div className="center-circle"></div>
-      <div className="penalty-box bottom"></div>
+      <div className="penalty-box right"></div>
 
       {formationPoints.map((p, index) => {
         const playerName = assigned[index];

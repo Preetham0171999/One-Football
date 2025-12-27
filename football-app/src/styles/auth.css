@@ -19,6 +19,10 @@
   padding: 28px 26px;
   border-radius: 12px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+
+  /* ensure card sits above the fixed background */
+  position: relative;
+  z-index: 1;
 }
 
 /* Title */
@@ -178,16 +182,36 @@
 }
 
 /* Static stadium background for auth pages */
+.auth-page,
+.bg-panel {
+  /* create a stacking context so pseudo-element layers behind content */
+  position: relative;
+  z-index: 0;
+}
+
+/* When .bg-panel is used on an auth page, we don't want it to constrain
+   the page width — remove the panel sizing so the background fills the root */
+.auth-page.bg-panel {
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+}
+
 .auth-page::before,
 .bg-panel::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -2;
+  z-index: -1;
 
-  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRDgmeaItJfLxB2Kl-JZ_vz7op2HbWJDePfg&s");
+  background-image: url("https://png.pngtree.com/background/20250102/original/pngtree-soccer-field-and-spotlight-background-in-the-stadium-picture-image_16093827.jpg");
+  background-repeat: no-repeat;
   background-size: cover;
-  background-position: center;
+  background-position: center center;
+  background-attachment: fixed;
 
   /* cinematic dark overlay */
   filter: brightness(0.38) saturate(0.9);

@@ -13,6 +13,7 @@ export default function TeamBuilder() {
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState("");
+  const [logo, setLogo] = useState("");
   const [players, setPlayers] = useState([]);
   const [allPlayers, setAllPlayers] = useState([]);
   const [assigned, setAssigned] = useState({});
@@ -72,24 +73,72 @@ export default function TeamBuilder() {
       .catch((err) => console.error("PLAYERS API ERROR:", err));
   }, [selectedTeam]);
 
+  // Load team logo for selected team
+  useEffect(() => {
+    if (!selectedTeam) {
+      setLogo("");
+      return;
+    }
+    if (!isAuthenticated()) return;
+
+    authFetch(`/logo/${selectedTeam}`)
+      .then((res) => res.json())
+      .then((data) => setLogo(data.logo || ""))
+      .catch((err) => console.error("LOGO API ERROR:", err));
+  }, [selectedTeam]);
+
   // Formation point generator
   const formationPoints = useMemo(
     () => getFormationCoordinates(formation) || [],
     [formation]
   );
 
-  const handleDrop = useMemo(
+  // Convert formation points for horizontal pitch (rotate 90° clockwise visually)
+  // mapping: x' = original y, y' = 100 - original x
+  const horizontalFormationPoints = useMemo(
     () =>
-      createHandleDrop({
-        formationPoints,
-        setAssigned,
-        setPlayers,
-        playerList: [...allPlayers, ...players],
-        formationRoles,
-        setTeamRating,
-      }),
-    [formationPoints, setAssigned, setPlayers, players, allPlayers, formationRoles]
+      formationPoints.map((p) => ({
+        ...p,
+        xPercent: p.yPercent,
+        yPercent: 100 - p.xPercent,
+      })),
+    [formationPoints]
   );
+
+  // const handleDrop = useMemo(
+  //   () =>
+  //     createHandleDrop({
+  //       formationPoints,
+  //       setAssigned,
+  //       setPlayers,
+  //       playerList: [...allPlayers, ...players],
+  //       formationRoles,
+  //       setTeamRating,
+  //     }),
+  //   [formationPoints, setAssigned, setPlayers, players, allPlayers, formationRoles]
+  // );
+
+  const handleDrop = useMemo(
+  () =>
+    createHandleDrop({
+      formationPoints: horizontalFormationPoints,
+      setAssigned,
+      setPlayers,
+      playerList: [...allPlayers, ...players],
+      formationRoles,
+      setTeamRating,
+    }),
+  [
+    horizontalFormationPoints,
+    setAssigned,
+    setPlayers,
+    players,
+    allPlayers,
+    formationRoles,
+    setTeamRating,
+  ]
+);
+
 
   // ⭐ ML Prediction API Call
   const handleAnalyze = async () => {
@@ -123,6 +172,7 @@ export default function TeamBuilder() {
       <LineupControls
         teams={teams}
         formations={formations}
+        logo={logo}
         selectedTeam={selectedTeam}
         setSelectedTeam={setSelectedTeam}
         formation={formation}
@@ -134,14 +184,14 @@ export default function TeamBuilder() {
           <h2>Team Rating: ⭐ {teamRating}</h2>
         </div>
       )}
-
+{/* 
       <button className="analyze-btn" onClick={handleAnalyze}>
         Analyze Result
       </button>
 
       {prediction && (
         <h2 className="prediction-text">Predicted Result: {prediction}</h2>
-      )}
+      )} */}
 
       {selectedTeam && (
         <div className="builder-layout">
@@ -149,7 +199,7 @@ export default function TeamBuilder() {
 
           <Pitch
             pitchRef={pitchRef}
-            formationPoints={formationPoints}
+            formationPoints={horizontalFormationPoints}
             assigned={assigned}
             players={players}
             allPlayers={allPlayers}
