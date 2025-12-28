@@ -6,6 +6,54 @@ body {
   color: white;
 }
 
+/* Team Selector page: keep layout stable under browser zoom */
+.team-selector-page {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(520px, 620px) minmax(280px, 1fr);
+  gap: 24px;
+  align-items: start;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.team-selector-header {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1100px) {
+  .team-selector-page {
+    grid-template-columns: 1fr;
+  }
+}
+
+.team-selector-page .selector-container {
+  margin: 0;
+}
+
+.team-selector-page .team-logo-right {
+  position: static;
+  right: auto;
+  top: auto;
+  display: block;
+  width: 250px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 16px;
+  z-index: auto;
+}
+
+.team-selector-page .club-stats-left,
+.team-selector-page .club-history-right {
+  position: static;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+  width: 100%;
+  max-width: 520px;
+  z-index: auto;
+}
+
 /* Bigger responsive container */
 .selector-container, .bg-panel {
   max-width: 500px;
@@ -316,6 +364,21 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s ease;
+}
+
+/* Back button: reuse btn-primary colors but avoid full-width */
+.btn-primary.back-button {
+  width: auto !important;
+  padding: 0.55rem 0.9rem;
+  font-size: 1rem;
+}
+
+/* Global floating back button (all pages) */
+.floating-back-container {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10000;
 }
 
 .more-info-btn:hover, .btn-primary:hover {

@@ -5,8 +5,10 @@ import { authFetch } from "../utils/api";
 import PlayerList from "../components/PlayerList";
 import Pitch from "../components/Pitch";
 import LineupControls from "../components/LineupControls";
+
 import { createHandleDrop } from "../utils/dragUtils";
 import { getFormationCoordinates } from "../utils/formationUtils";
+import { buildTeamFromAssigned, getTeamRatings } from "../utils/ratingUtils";
 import "./TeamBuilder.css";
 
 export default function TeamBuilder() {
@@ -17,9 +19,15 @@ export default function TeamBuilder() {
   const [players, setPlayers] = useState([]);
   const [allPlayers, setAllPlayers] = useState([]);
   const [assigned, setAssigned] = useState({});
+  const [subs, setSubs] = useState({ right: [] });
   const [formation, setFormation] = useState("4-3-3");
   const [teamRating, setTeamRating] = useState(0);
   const [prediction, setPrediction] = useState(null);
+
+  const [movePlayersEnabled, setMovePlayersEnabled] = useState(false);
+  const [drawArrowsEnabled, setDrawArrowsEnabled] = useState(false);
+  const [freePositions, setFreePositions] = useState({}); // index -> { xPercent, yPercent }
+  const [arrows, setArrows] = useState([]); // { x1, y1, x2, y2 }
 
   const formations = {
     "4-3-3": { defense: 4, midfield: 3, attack: 3 },
@@ -69,6 +77,13 @@ export default function TeamBuilder() {
       .then((data) => {
         setPlayers(data.players || []);
         setAllPlayers(data.players || []);
+        setAssigned({});
+        setSubs({ right: [] });
+        setTeamRating(0);
+        setMovePlayersEnabled(false);
+        setDrawArrowsEnabled(false);
+        setFreePositions({});
+        setArrows([]);
       })
       .catch((err) => console.error("PLAYERS API ERROR:", err));
   }, [selectedTeam]);
@@ -105,6 +120,11 @@ export default function TeamBuilder() {
     [formationPoints]
   );
 
+  // Formation changes should clear free-move offsets (new point layout)
+  useEffect(() => {
+    setFreePositions({});
+  }, [horizontalFormationPoints]);
+
   // const handleDrop = useMemo(
   //   () =>
   //     createHandleDrop({
@@ -124,7 +144,10 @@ export default function TeamBuilder() {
       formationPoints: horizontalFormationPoints,
       setAssigned,
       setPlayers,
-      playerList: [...allPlayers, ...players],
+      setSubs,
+      side: "right",
+      flipY: false,
+      playerList: allPlayers,
       formationRoles,
       setTeamRating,
     }),
@@ -135,9 +158,37 @@ export default function TeamBuilder() {
     players,
     allPlayers,
     formationRoles,
+    setSubs,
     setTeamRating,
   ]
 );
+
+  const handleRemovePlayer = (playerName, index) => {
+    setAssigned((prev) => {
+      const updated = { ...prev };
+      delete updated[index];
+
+      const { team } = buildTeamFromAssigned(updated, allPlayers, formationRoles);
+      setTeamRating(getTeamRatings(team).average);
+      return updated;
+    });
+
+    setFreePositions((prev) => {
+      if (!prev[index]) return prev;
+      const next = { ...prev };
+      delete next[index];
+      return next;
+    });
+
+    const playerObj = allPlayers.find((p) => p.name === playerName);
+    if (playerObj) {
+      setSubs((prev) => {
+        const list = prev.right || [];
+        if (list.some((p) => p?.name === playerObj.name)) return prev;
+        return { ...prev, right: [...list, playerObj] };
+      });
+    }
+  };
 
 
   // ⭐ ML Prediction API Call
@@ -197,6 +248,39 @@ export default function TeamBuilder() {
         <div className="builder-layout">
           <PlayerList players={players} />
 
+          <div className="pitch-and-tools">
+            <div className="analysis-tools">
+              <label className="analysis-tool">
+                <input
+                  type="checkbox"
+                  checked={movePlayersEnabled}
+                  onChange={(e) => setMovePlayersEnabled(e.target.checked)}
+                />
+                Move players
+              </label>
+              <label className="analysis-tool">
+                <input
+                  type="checkbox"
+                  checked={drawArrowsEnabled}
+                  onChange={(e) => setDrawArrowsEnabled(e.target.checked)}
+                />
+                Draw arrows
+              </label>
+
+              <button
+                type="button"
+                className="analysis-reset"
+                onClick={() => {
+                  setMovePlayersEnabled(false);
+                  setDrawArrowsEnabled(false);
+                  setFreePositions({});
+                  setArrows([]);
+                }}
+              >
+                Reset
+              </button>
+            </div>
+
           <Pitch
             pitchRef={pitchRef}
             formationPoints={horizontalFormationPoints}
@@ -204,7 +288,36 @@ export default function TeamBuilder() {
             players={players}
             allPlayers={allPlayers}
             onDrop={handleDrop}
+            onRemovePlayer={handleRemovePlayer}
+            movePlayersEnabled={movePlayersEnabled}
+            drawArrowsEnabled={drawArrowsEnabled}
+            freePositions={freePositions}
+            setFreePositions={setFreePositions}
+            arrows={arrows}
+            setArrows={setArrows}
           />
+
+          </div>
+
+          <div className="subs-panel">
+            <h3 className="subs-title">Subs</h3>
+            <div className="subs-list">
+              {subs.right.map((player, i) => (
+                <div
+                  key={`${player.name}-${i}`}
+                  className="sub-item"
+                  draggable
+                  onDragStart={(e) =>
+                    e.dataTransfer.setData("text/plain", JSON.stringify(player))
+                  }
+                >
+                  <span className="sub-icon">🔄</span>
+                  <div className="sub-dot">{player.position?.[0]}</div>
+                  <div className="sub-name">{player.name.replace("_", " ")}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>

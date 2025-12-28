@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import BackButton from "./components/BackButton";
 import TeamSelector from "./components/TeamSelector";
 import TeamBuilder from "./components/TeamBuilder";
 import BuildMatch from "./components/BuildMatch/BuildMatch";
@@ -14,6 +15,9 @@ import { Navigate } from "react-router-dom";
 export default function App() {
   return (
     <BrowserRouter>
+      <div className="floating-back-container">
+        <BackButton />
+      </div>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

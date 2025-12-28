@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import "../../styles/auth.css";
+import BackButton from "../../components/BackButton";
 
 export default function Login() {
   const { handleLogin, loading, error } = useAuth();

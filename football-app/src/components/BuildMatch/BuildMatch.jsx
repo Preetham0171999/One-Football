@@ -5,6 +5,7 @@ import { authFetch } from "../../utils/api";
 import PlayerList from "../../components/PlayerList";
 import MatchPitch from "./MatchPitch";
 import LineupControls from "../../components/LineupControls";
+import BackButton from "../../components/BackButton";
 import { createHandleDrop } from "../../utils/dragUtils";
 import { getFormationCoordinates } from "../../utils/formationUtils";
 

@@ -11,6 +11,7 @@ export function createHandleDrop({
   setPlayers,
   setSubs,
   side,
+  flipY,
   playerList,
   formationRoles,
   setTeamRating,
@@ -23,8 +24,10 @@ export function createHandleDrop({
     let dropX = ((e.clientX - rect.left) / rect.width) * 100;
     let dropY = ((e.clientY - rect.top) / rect.height) * 100;
 
-    // ✅ Only flip Y if side is explicitly "right"
-    if (side === "right") {
+    const shouldFlipY = typeof flipY === "boolean" ? flipY : side === "right";
+
+    // ✅ Flip Y only when requested (match bottom-half pitch logic)
+    if (shouldFlipY) {
       dropY = 100 - dropY;
     }
 
