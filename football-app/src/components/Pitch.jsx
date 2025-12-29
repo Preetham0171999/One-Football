@@ -223,8 +223,12 @@ export default function Pitch({
                 }}
               >
                 <strong>{playerObj.name}</strong>
-                <br />
-                {playerObj.position} — ⭐{playerObj.rating}
+                {onRemovePlayer && (
+                  <>
+                    <br />
+                    {playerObj.position} — ⭐{playerObj.rating}
+                  </>
+                )}
               </div>
             )}
 

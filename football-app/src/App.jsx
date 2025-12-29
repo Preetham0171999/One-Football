@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Dashboard from "./pages/Dashboard";
+import CompareAnalyses from "./pages/CompareAnalyses";
 import { Navigate } from "react-router-dom";
 
 export default function App() {
@@ -46,6 +47,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <BuildMatch />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/compare"
+          element={
+            <ProtectedRoute>
+              <CompareAnalyses />
             </ProtectedRoute>
           }
         />

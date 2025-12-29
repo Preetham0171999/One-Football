@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, JSON
+from sqlalchemy import Column, Integer, String, JSON, DateTime
+from sqlalchemy.sql import func
 from .db import Base
 
 class Team(Base):
@@ -41,4 +42,24 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
+
+
+class Analysis(Base):
+    __tablename__ = "analyses"
+
+    id = Column(Integer, primary_key=True)
+    user_email = Column(String, index=True)
+
+    # Optional metadata for filtering/display
+    name = Column(String, index=True, nullable=True)
+    team = Column(String, index=True, nullable=True)
+    formation = Column(String, nullable=True)
+
+    # Saved analysis state
+    assigned = Column(JSON)
+    subs = Column(JSON)
+    free_positions = Column(JSON)
+    arrows = Column(JSON)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 

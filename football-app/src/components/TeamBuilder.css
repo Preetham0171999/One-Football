@@ -277,6 +277,20 @@
   background: #ffffff22;
 }
 
+.analysis-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ffffff55;
+  background: transparent;
+  color: white;
+  font-size: 13px;
+  max-width: 220px;
+}
+
+.analysis-select option {
+  color: black;
+}
+
 .builder-layout > .player-list-container {
   grid-column: 1;
   justify-self: end;

@@ -1,12 +1,38 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Any, Optional
 
 from logic.combined_predictor.predict import combine_predictions
 from auth.routes import router as auth_router
 
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+def _ensure_db_schema():
+    """Lightweight schema guard for local development (no migrations).
+
+    1) Creates missing tables.
+    2) Adds any newer columns used by the app.
+    """
+    try:
+        from sqlalchemy import text
+        from database.db import engine
+        from database.models import Base
+
+        # Create any missing tables first (prevents UndefinedTable errors).
+        Base.metadata.create_all(bind=engine)
+
+        # Postgres supports IF NOT EXISTS
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE analyses ADD COLUMN IF NOT EXISTS name VARCHAR"))
+            conn.commit()
+    except Exception:
+        # If the DB isn't reachable at startup, normal routes will fail anyway.
+        # Don't crash the app here; surface errors on request.
+        pass
 
 
 app.add_middleware(
@@ -125,6 +151,125 @@ def get_club_history(team_name: str, db: Session = Depends(get_db), current_user
         ClubHistory.team == team_name.lower()
     ).first()
     return {"history": row.history if row else []}
+
+
+# ----------------------------
+# Saved analyses (per-user)
+# ----------------------------
+from database.models import Analysis
+
+
+class AnalysisCreate(BaseModel):
+    name: str
+    team: Optional[str] = None
+    formation: Optional[str] = None
+    assigned: dict[str, Any]
+    subs: dict[str, Any]
+    freePositions: dict[str, Any]
+    arrows: list[dict[str, Any]]
+
+
+@app.post("/analysis")
+def save_analysis(
+    payload: AnalysisCreate,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    name = (payload.name or "").strip()
+    if not name:
+        raise HTTPException(status_code=400, detail="Analysis name is required")
+
+    analysis = (
+        db.query(Analysis)
+        .filter(Analysis.user_email == current_user, Analysis.name == name)
+        .first()
+    )
+
+    if analysis:
+        analysis.team = payload.team
+        analysis.formation = payload.formation
+        analysis.assigned = payload.assigned
+        analysis.subs = payload.subs
+        analysis.free_positions = payload.freePositions
+        analysis.arrows = payload.arrows
+    else:
+        analysis = Analysis(
+            user_email=current_user,
+            name=name,
+            team=payload.team,
+            formation=payload.formation,
+            assigned=payload.assigned,
+            subs=payload.subs,
+            free_positions=payload.freePositions,
+            arrows=payload.arrows,
+        )
+        db.add(analysis)
+    try:
+        db.commit()
+        db.refresh(analysis)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {
+        "id": analysis.id,
+        "name": analysis.name,
+        "created_at": analysis.created_at,
+        "team": analysis.team,
+        "formation": analysis.formation,
+    }
+
+
+@app.get("/analysis")
+def list_analyses(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    rows = (
+        db.query(Analysis)
+        .filter(Analysis.user_email == current_user)
+        .order_by(Analysis.created_at.desc())
+        .all()
+    )
+    return {
+        "analyses": [
+            {
+                "id": a.id,
+                "name": a.name,
+                "created_at": a.created_at,
+                "team": a.team,
+                "formation": a.formation,
+            }
+            for a in rows
+        ]
+    }
+
+
+@app.get("/analysis/{analysis_id}")
+def get_analysis(
+    analysis_id: int,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    a = (
+        db.query(Analysis)
+        .filter(Analysis.id == analysis_id, Analysis.user_email == current_user)
+        .first()
+    )
+    if not a:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+
+    return {
+        "id": a.id,
+        "name": a.name,
+        "created_at": a.created_at,
+        "team": a.team,
+        "formation": a.formation,
+        "assigned": a.assigned,
+        "subs": a.subs,
+        "freePositions": a.free_positions,
+        "arrows": a.arrows,
+    }
 
 
 

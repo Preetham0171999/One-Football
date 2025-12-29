@@ -1,0 +1,156 @@
+.compare-analyses-container {
+  padding: 16px;
+  color: white;
+}
+
+.compare-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.compare-refresh {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ffffff55;
+  background: transparent;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.compare-refresh:hover {
+  background: #ffffff22;
+}
+
+.compare-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.compare-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 12px 0 16px;
+  padding: 10px;
+  background: #ffffff22;
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+  align-items: flex-end;
+}
+
+.compare-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+}
+
+.compare-label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.compare-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ffffff55;
+  background: transparent;
+  color: white;
+  font-size: 13px;
+  max-width: 260px;
+}
+
+.compare-select:hover {
+  background: #ffffff11;
+}
+
+.compare-select:focus {
+  outline: none;
+  border-color: #ffffffaa;
+}
+
+.compare-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.compare-select option {
+  color: black;
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .compare-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compare-card {
+  padding: 12px;
+  min-width: 0;
+  background: #ffffff22;
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+  border: 1px solid #ffffff22;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.compare-card-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.compare-card-subtitle {
+  opacity: 0.8;
+}
+
+.compare-meta {
+  margin-bottom: 10px;
+}
+
+.compare-pitch-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  aspect-ratio: 900 / 520;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Override the fixed pitch size from TeamBuilder.css within compare view */
+.compare-analyses-container .pitch-container {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Compare view is read-only; show compact name labels */
+.compare-analyses-container .player-info-card {
+  display: block;
+  padding: 3px 6px;
+  font-size: 10px;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none !important;
+}
+
+.compare-error {
+  white-space: pre-wrap;
+  margin-top: 8px;
+}

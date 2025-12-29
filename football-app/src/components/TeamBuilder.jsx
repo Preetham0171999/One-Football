@@ -28,6 +28,13 @@ export default function TeamBuilder() {
   const [drawArrowsEnabled, setDrawArrowsEnabled] = useState(false);
   const [freePositions, setFreePositions] = useState({}); // index -> { xPercent, yPercent }
   const [arrows, setArrows] = useState([]); // { x1, y1, x2, y2 }
+  const [isSavingAnalysis, setIsSavingAnalysis] = useState(false);
+
+  const [savedAnalyses, setSavedAnalyses] = useState([]);
+  const [selectedAnalysisId, setSelectedAnalysisId] = useState("");
+  const [isLoadingAnalyses, setIsLoadingAnalyses] = useState(false);
+  const [isOpeningAnalysis, setIsOpeningAnalysis] = useState(false);
+  const [pendingAnalysis, setPendingAnalysis] = useState(null);
 
   const formations = {
     "4-3-3": { defense: 4, midfield: 3, attack: 3 },
@@ -65,6 +72,26 @@ export default function TeamBuilder() {
       .then((res) => res.json())
       .then((data) => setTeams(data.teams))
       .catch((err) => console.error("TEAMS API ERROR:", err));
+  }, []);
+
+  const loadAnalyses = async () => {
+    if (!isAuthenticated()) return;
+    setIsLoadingAnalyses(true);
+    try {
+      const res = await authFetch(`/analysis`);
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      setSavedAnalyses(data.analyses || []);
+    } catch (err) {
+      console.error("Load analyses failed:", err);
+    } finally {
+      setIsLoadingAnalyses(false);
+    }
+  };
+
+  // Load saved analyses for the logged-in user
+  useEffect(() => {
+    loadAnalyses();
   }, []);
 
   // Load players for selected team
@@ -122,8 +149,32 @@ export default function TeamBuilder() {
 
   // Formation changes should clear free-move offsets (new point layout)
   useEffect(() => {
+    if (pendingAnalysis) return;
     setFreePositions({});
   }, [horizontalFormationPoints]);
+
+  // Apply a pending loaded analysis after team/players/formation are ready
+  useEffect(() => {
+    if (!pendingAnalysis) return;
+
+    const targetTeam = pendingAnalysis.team;
+    const targetFormation = pendingAnalysis.formation;
+
+    if (targetTeam && targetTeam !== selectedTeam) return;
+    if (targetFormation && targetFormation !== formation) return;
+    if (!allPlayers?.length) return;
+
+    const nextAssigned = pendingAnalysis.assigned || {};
+    setAssigned(nextAssigned);
+    setSubs(pendingAnalysis.subs || { right: [] });
+    setFreePositions(pendingAnalysis.freePositions || {});
+    setArrows(pendingAnalysis.arrows || []);
+
+    const { team } = buildTeamFromAssigned(nextAssigned, allPlayers, formationRoles);
+    setTeamRating(getTeamRatings(team).average);
+
+    setPendingAnalysis(null);
+  }, [pendingAnalysis, selectedTeam, formation, allPlayers, formationRoles]);
 
   // const handleDrop = useMemo(
   //   () =>
@@ -218,6 +269,68 @@ export default function TeamBuilder() {
     }
   };
 
+  const handleSaveAnalysis = async () => {
+    if (!selectedTeam) return;
+
+    const name = (window.prompt("Name this analysis") || "").trim();
+    if (!name) return;
+
+    setIsSavingAnalysis(true);
+    try {
+      const res = await authFetch(`/analysis`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          team: selectedTeam,
+          formation,
+          assigned,
+          subs,
+          freePositions,
+          arrows,
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Failed to save analysis");
+      }
+
+      window.alert("Analysis saved");
+      await loadAnalyses();
+    } catch (err) {
+      console.error("Save analysis failed:", err);
+      window.alert("Failed to save analysis");
+    } finally {
+      setIsSavingAnalysis(false);
+    }
+  };
+
+  const handleOpenAnalysis = async () => {
+    if (!selectedAnalysisId) return;
+    setIsOpeningAnalysis(true);
+    try {
+      const res = await authFetch(`/analysis/${selectedAnalysisId}`);
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+
+      // Stage application; team/formation changes may trigger resets.
+      setPendingAnalysis(data);
+
+      if (data.team && data.team !== selectedTeam) {
+        setSelectedTeam(data.team);
+      }
+      if (data.formation && data.formation !== formation) {
+        setFormation(data.formation);
+      }
+    } catch (err) {
+      console.error("Open analysis failed:", err);
+      window.alert("Failed to open analysis");
+    } finally {
+      setIsOpeningAnalysis(false);
+    }
+  };
+
   return (
     <div className="team-builder-container">
       <LineupControls
@@ -278,6 +391,47 @@ export default function TeamBuilder() {
                 }}
               >
                 Reset
+              </button>
+
+              <button
+                type="button"
+                className="analysis-reset"
+                disabled={isSavingAnalysis}
+                onClick={handleSaveAnalysis}
+              >
+                {isSavingAnalysis ? "Saving..." : "Save analysis"}
+              </button>
+
+              <select
+                className="analysis-select"
+                value={selectedAnalysisId}
+                onChange={(e) => setSelectedAnalysisId(e.target.value)}
+                disabled={isLoadingAnalyses}
+              >
+                <option value="">Open saved…</option>
+                {savedAnalyses.map((a) => (
+                  <option key={a.id} value={String(a.id)}>
+                    {(a.name || "(unnamed)") + (a.team ? ` — ${a.team}` : "")}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                className="analysis-reset"
+                disabled={!selectedAnalysisId || isOpeningAnalysis}
+                onClick={handleOpenAnalysis}
+              >
+                {isOpeningAnalysis ? "Opening..." : "Open"}
+              </button>
+
+              <button
+                type="button"
+                className="analysis-reset"
+                disabled={isLoadingAnalyses || (savedAnalyses || []).length === 0}
+                onClick={() => navigate("/compare")}
+              >
+                Compare
               </button>
             </div>
 
