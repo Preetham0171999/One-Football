@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
+import ChangePassword from "./pages/auth/ChangePassword";
 import Dashboard from "./pages/Dashboard";
 import CompareAnalyses from "./pages/CompareAnalyses";
 import { Navigate } from "react-router-dom";
@@ -25,6 +26,15 @@ export default function App() {
 
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/team"

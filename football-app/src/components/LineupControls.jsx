@@ -10,7 +10,8 @@ export default function LineupControls({
   setSelectedTeam,
   setFormation,
   logo,
-  teamRating
+  teamRating,
+  title = "Select Your Football Team ⚽",
 }) {
   return (
     <div className="selector-wrapper">
@@ -30,7 +31,7 @@ export default function LineupControls({
           )}
 
           {/* Title */}
-          <h2 className="team-title">Select Your Football Team ⚽</h2>
+          <h2 className="team-title">{title}</h2>
 
           {/* Rating meter (only when provided) */}
           {selectedTeam && typeof teamRating === "number" && (

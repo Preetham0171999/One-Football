@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { isAuthenticated } from "../../utils/auth";
 import { authFetch } from "../../utils/api";
 import PlayerList from "../../components/PlayerList";
 import MatchPitch from "./MatchPitch";
 import LineupControls from "../../components/LineupControls";
-import BackButton from "../../components/BackButton";
+
 import { createHandleDrop } from "../../utils/dragUtils";
 import { getFormationCoordinates } from "../../utils/formationUtils";
 
@@ -78,35 +78,31 @@ export default function BuildMatch() {
   }, [leftTeam, rightTeam]);
 
   // Fetch players for left/right teams
-useEffect(() => {
-  if (leftTeam) {
-    if (!isAuthenticated()) return;
-    authFetch(`/players/${leftTeam}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setLeftPlayers(data.players || []);
-        setLeftAllPlayers(data.players || []);
-      })
-      .catch((err) => console.error("left players error:", err));
-  }
-}, [leftTeam]);
+  useEffect(() => {
+    if (leftTeam) {
+      if (!isAuthenticated()) return;
+      authFetch(`/players/${leftTeam}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setLeftPlayers(data.players || []);
+          setLeftAllPlayers(data.players || []);
+        })
+        .catch((err) => console.error("left players error:", err));
+    }
+  }, [leftTeam]);
 
-useEffect(() => {
-  if (rightTeam) {
-    if (!isAuthenticated()) return;
-    authFetch(`/players/${rightTeam}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setRightPlayers(data.players || []);
-        setRightAllPlayers(data.players || []);
-      })
-      .catch((err) => console.error("right players error:", err));
-  }
-}, [rightTeam]);
-
-
-
-
+  useEffect(() => {
+    if (rightTeam) {
+      if (!isAuthenticated()) return;
+      authFetch(`/players/${rightTeam}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setRightPlayers(data.players || []);
+          setRightAllPlayers(data.players || []);
+        })
+        .catch((err) => console.error("right players error:", err));
+    }
+  }, [rightTeam]);
 
   // Formation coordinates
   const leftCoords = useMemo(
@@ -151,21 +147,17 @@ useEffect(() => {
   );
 
   const memoAllPlayers = useMemo(
-  () => ({ left: leftAllPlayers, right: rightAllPlayers }),
-  [leftAllPlayers, rightAllPlayers]
-);
+    () => ({ left: leftAllPlayers, right: rightAllPlayers }),
+    [leftAllPlayers, rightAllPlayers]
+  );
 
-const memoFormationPoints = useMemo(
-  () => ({
-    left: getFormationCoordinates(leftFormation),
-    right: getFormationCoordinates(rightFormation),
-  }),
-  [leftFormation, rightFormation]
-);
-
-
-
-
+  const memoFormationPoints = useMemo(
+    () => ({
+      left: getFormationCoordinates(leftFormation),
+      right: getFormationCoordinates(rightFormation),
+    }),
+    [leftFormation, rightFormation]
+  );
 
   // Prediction
   const handlePredict = async () => {
@@ -175,8 +167,8 @@ const memoFormationPoints = useMemo(
     const payload = {
       team_a: leftTeam,
       team_b: rightTeam,
-        left_formation: leftFormation,     // 🔥 ADD
-  right_formation: rightFormation, 
+      left_formation: leftFormation, // 🔥 ADD
+      right_formation: rightFormation,
       left_playing_11: leftAssigned,
       right_playing_11: rightAssigned,
       left_rating: leftTeamRating,
@@ -199,17 +191,8 @@ const memoFormationPoints = useMemo(
     setLoading(false);
   };
 
-          console.log("BUILD leftAllPlayers:", leftAllPlayers);
-console.log("BUILD rightAllPlayers:", rightAllPlayers);
-
-
-// const memoFormationRoles = useMemo(
-//   () => ({
-//     left: formationRoles[leftFormation],
-//     right: formationRoles[rightFormation],
-//   }),
-//   [leftFormation, rightFormation]
-// );
+  console.log("BUILD leftAllPlayers:", leftAllPlayers);
+  console.log("BUILD rightAllPlayers:", rightAllPlayers);
 
   return (
     <div className="build-match-container">
@@ -228,7 +211,7 @@ console.log("BUILD rightAllPlayers:", rightAllPlayers);
             logo={leftLogo}
             teamRating={leftTeamRating}
           />
-          <PlayerList players={leftPlayers} title="Team A Players" />
+          <PlayerList players={leftPlayers} title="Players" selectedTeam={leftTeam} />
         </div>
 
         {/* CENTER PITCH */}
@@ -277,8 +260,9 @@ console.log("BUILD rightAllPlayers:", rightAllPlayers);
             setFormation={setRightFormation}
             logo={rightLogo}
             teamRating={rightTeamRating}
+            title={"Select Opponent Football Team ⚽"}
           />
-          <PlayerList players={rightPlayers} title="Team B Players" />
+          <PlayerList players={rightPlayers} title="Players" selectedTeam={rightTeam} />
         </div>
       </div>
     </div>

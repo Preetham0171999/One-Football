@@ -4,8 +4,8 @@ from sqlalchemy.exc import IntegrityError
 
 from database.db import SessionLocal
 from database.models import User
-from auth.schemas import UserCreate, UserLogin, Token
-from auth.security import hash_password, verify_password, create_access_token
+from auth.schemas import UserCreate, UserLogin, Token, ChangePasswordRequest
+from auth.security import hash_password, verify_password, create_access_token, get_current_user
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -48,3 +48,26 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
 
     token = create_access_token({"sub": db_user.email})
     return {"access_token": token}
+
+
+@router.post("/change-password")
+def change_password(
+    payload: ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    db_user = db.query(User).filter(User.email == current_user).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not verify_password(payload.old_password, db_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Old password is wrong")
+
+    db_user.hashed_password = hash_password(payload.new_password)
+    try:
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "Password updated"}

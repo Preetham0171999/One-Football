@@ -19,12 +19,12 @@ export default function TeamSelector() {
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState("");
   const [players, setPlayers] = useState([]);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [logo, setLogo] = useState("");
   const [metrics, setMetrics] = useState([]);
   const [history, setHistory] = useState([]);
 
   const [teamInfo, setTeamInfo] = useState({});
-  const [showMoreInfo, setShowMoreInfo] = useState(false);
 
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -42,11 +42,12 @@ export default function TeamSelector() {
       .catch((err) => console.error("team-info error:", err));
   }, [selectedTeam]);
 
-  const [moreInfoVisible, setMoreInfoVisible] = useState(false);
+  useEffect(() => {
+    // Reset selected player whenever team changes
+    setSelectedPlayer(null);
+  }, [selectedTeam]);
 
-  const hideMoreInfo = () => {
-    setMoreInfoVisible(false);
-  };
+  
 
   useEffect(() => {
     if (!selectedTeam) return;
@@ -139,25 +140,6 @@ export default function TeamSelector() {
 
       {/* CENTER COLUMN */}
       <div className="team-selector-center">
-        {selectedTeam && (
-          <div className="more-info-box">
-            {/* Collapsible content */}
-            {showMoreInfo && (
-              <div className="more-info-content">
-                <h3>More About {selectedTeam}</h3>
-                <p>{teamData.description}</p>
-
-                <h4>Fun Facts</h4>
-                <ul>
-                  {teamData.fun_facts.map((fact, idx) => (
-                    <li key={idx}>{fact}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-
         <div className="selector-container">
           <h2>Select your football team ⚽</h2>
 
@@ -187,7 +169,21 @@ export default function TeamSelector() {
 
                 <ul className="player-list">
                   {players.map((player, idx) => (
-                    <li key={idx}>
+                    <li
+                      key={idx}
+                      className={`player-row${
+                        selectedPlayer?.name === player.name ? " is-selected" : ""
+                      }`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setSelectedPlayer(player)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelectedPlayer(player);
+                        }
+                      }}
+                    >
                       <span className="player-name">{player.name}</span>
                       <span className="player-position">{player.position}</span>
                       <span className="player-rating">{player.rating}</span>
@@ -205,6 +201,101 @@ export default function TeamSelector() {
         {selectedTeam && logo && (
           <img src={logo} alt={selectedTeam} className="team-logo-right" />
         )}
+
+        {selectedTeam && (
+          <PlayerCard player={selectedPlayer} teamName={selectedTeam} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PlayerCard({ player, teamName }) {
+  if (!player) {
+    return (
+      <div className="player-card player-card-placeholder">
+        <div className="player-card-placeholder-title">Player Card</div>
+        <div className="player-card-placeholder-text">
+          Click any player to view their card.
+        </div>
+      </div>
+    );
+  }
+
+  const overall = Number(player.rating) || 0;
+  const position = String(player.position || "");
+  const positionKey = position.toLowerCase();
+  const displayName = String(player.name || "").replace(/_/g, " ");
+
+  const clamp = (value) => Math.max(1, Math.min(99, Math.round(value)));
+
+  const buildStats = () => {
+    if (positionKey === "goalkeeper") {
+      return {
+        DIV: clamp(overall + 1),
+        HAN: clamp(overall - 1),
+        KIC: clamp(overall - 4),
+        REF: clamp(overall + 2),
+        SPE: clamp(overall - 8),
+        POS: clamp(overall - 2),
+      };
+    }
+
+    if (positionKey === "defender") {
+      return {
+        PAC: clamp(overall - 2),
+        SHO: clamp(overall - 10),
+        PAS: clamp(overall - 2),
+        DRI: clamp(overall - 6),
+        DEF: clamp(overall + 7),
+        PHY: clamp(overall + 4),
+      };
+    }
+
+    if (positionKey === "midfielder") {
+      return {
+        PAC: clamp(overall + 1),
+        SHO: clamp(overall - 2),
+        PAS: clamp(overall + 5),
+        DRI: clamp(overall + 3),
+        DEF: clamp(overall - 4),
+        PHY: clamp(overall - 3),
+      };
+    }
+
+    // forward / default
+    return {
+      PAC: clamp(overall + 3),
+      SHO: clamp(overall + 4),
+      PAS: clamp(overall - 2),
+      DRI: clamp(overall + 2),
+      DEF: clamp(overall - 12),
+      PHY: clamp(overall - 2),
+    };
+  };
+
+  const stats = buildStats();
+  const statEntries = Object.entries(stats);
+
+  return (
+    <div className="player-card" aria-label="Selected player card">
+      <div className="player-card-header">
+        <div className="player-card-overall">{overall}</div>
+        <div className="player-card-meta">
+          <div className="player-card-position">{position}</div>
+          <div className="player-card-team">{teamName}</div>
+        </div>
+      </div>
+
+      <div className="player-card-name">{displayName}</div>
+
+      <div className="player-card-stats">
+        {statEntries.map(([label, value]) => (
+          <div className="player-card-stat" key={label}>
+            <span className="player-card-stat-value">{value}</span>
+            <span className="player-card-stat-label">{label}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
