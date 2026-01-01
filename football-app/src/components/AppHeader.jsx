@@ -25,13 +25,39 @@ export default function AppHeader() {
   return (
     <header className="app-header">
       <div className="app-header-inner">
-        <button
-          type="button"
-          className="app-header-title"
-          onClick={() => navigate("/dashboard")}
-        >
-          One Football
-        </button>
+        <div className="app-header-nav">
+          <button
+            type="button"
+            className="app-header-title"
+            onClick={() => navigate("/dashboard")}
+          >
+            Home
+          </button>
+
+          <button
+            type="button"
+            className="app-header-title"
+            onClick={() => navigate("/news")}
+          >
+            News
+          </button>
+
+          <button
+            type="button"
+            className="app-header-title"
+            onClick={() => navigate("/about-us")}
+          >
+            About Us
+          </button>
+
+          <button
+            type="button"
+            className="app-header-title"
+            onClick={() => navigate("/apis")}
+          >
+            APIs
+          </button>
+        </div>
 
         <div className="app-header-right" ref={menuRef}>
           <button

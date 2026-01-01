@@ -1,13 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/auth.css";
+import "./StaticPanel.css";
 
 export default function Dashboard() {
   const navigate = useNavigate();
 
   return (
     <div className="auth-page">
-      <div className="bg-panel no-bg">
+      <div className="bg-panel no-bg static-panel">
         <h2 style={{ textAlign: "center" }}>Welcome to OneFootball Arena</h2>
         <p style={{ textAlign: "center", color: "#ddd", marginTop: 6 }}>
           Where tactics are forged, legends are built, and matches are won before

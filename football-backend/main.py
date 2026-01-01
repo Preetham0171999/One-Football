@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Any, Optional
 
+import time
+import urllib.request
+import xml.etree.ElementTree as ET
+
 from logic.combined_predictor.predict import combine_predictions
 from auth.routes import router as auth_router
 
@@ -270,6 +274,75 @@ def get_analysis(
         "freePositions": a.free_positions,
         "arrows": a.arrows,
     }
+
+
+# ----------------------------
+# Latest news (RSS headlines)
+# ----------------------------
+
+_NEWS_CACHE: dict[str, Any] = {"ts": 0.0, "data": None}
+
+
+def _fetch_rss_headlines(url: str, limit: int = 20) -> list[dict[str, Any]]:
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "One-Football/1.0 (+https://localhost)",
+            "Accept": "application/rss+xml, application/xml;q=0.9, */*;q=0.8",
+        },
+        method="GET",
+    )
+
+    with urllib.request.urlopen(req, timeout=6) as resp:
+        xml_bytes = resp.read()
+
+    root = ET.fromstring(xml_bytes)
+    channel = root.find("channel")
+    if channel is None:
+        channel = root.find("./channel")
+    if channel is None:
+        raise ValueError("Unsupported feed format")
+
+    items = []
+    for item in channel.findall("item")[: max(0, int(limit))]:
+        title = (item.findtext("title") or "").strip()
+        link = (item.findtext("link") or "").strip()
+        pub = (item.findtext("pubDate") or "").strip()
+
+        if not title or not link:
+            continue
+
+        items.append({"title": title, "link": link, "published": pub or None})
+
+    return items
+
+
+@app.get("/news/latest")
+def latest_news(
+    limit: int = 20,
+    current_user: str = Depends(get_current_user),
+):
+    # Cache for 5 minutes to avoid repeated external requests
+    now = time.time()
+    if _NEWS_CACHE.get("data") is not None and (now - float(_NEWS_CACHE.get("ts") or 0)) < 300:
+        cached = _NEWS_CACHE["data"]
+        return {
+            "source": cached.get("source"),
+            "items": cached.get("items", []),
+            "cached": True,
+        }
+
+    # RSS feed (no API key). Headlines + links only.
+    feed_url = "https://feeds.bbci.co.uk/sport/football/rss.xml"
+    try:
+        items = _fetch_rss_headlines(feed_url, limit=limit)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"News fetch failed: {e}")
+
+    data = {"source": "BBC Sport Football", "items": items}
+    _NEWS_CACHE["ts"] = now
+    _NEWS_CACHE["data"] = data
+    return {"source": data["source"], "items": data["items"], "cached": False}
 
 
 

@@ -1,0 +1,81 @@
+.news-panel h2 {
+  margin: 0;
+}
+
+/* Strong override of the global .bg-panel sizing (index.css) for the News page */
+.bg-panel.news-panel {
+  max-width: 1200px;
+  width: min(1200px, calc(100vw - 32px));
+  margin: 16px auto;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.news-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.btn-primary.news-refresh {
+  width: auto;
+  padding: 0.55rem 0.9rem;
+  font-size: 1rem;
+}
+
+.news-muted {
+  opacity: 0.85;
+  margin: 10px 0;
+}
+
+.news-error {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.news-list {
+  list-style: none;
+  padding: 14px;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.40);
+}
+
+.news-item {
+  padding: 14px 14px;
+  border-radius: 12px;
+  background: #ffea69;
+  color: #000;
+}
+
+.news-item:hover {
+  background: #fff1a6;
+}
+
+.news-link {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.news-link:hover {
+  text-decoration: underline;
+}
+
+.news-date {
+  margin-top: 6px;
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.news-source {
+  margin-top: 14px;
+  opacity: 0.75;
+  font-size: 0.9rem;
+}

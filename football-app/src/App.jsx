@@ -12,6 +12,9 @@ import Signup from "./pages/auth/Signup";
 import ChangePassword from "./pages/auth/ChangePassword";
 import Dashboard from "./pages/Dashboard";
 import CompareAnalyses from "./pages/CompareAnalyses";
+import News from "./pages/News";
+import AboutUs from "./pages/AboutUs";
+import Apis from "./pages/Apis";
 import { Navigate } from "react-router-dom";
 
 export default function App() {
@@ -26,6 +29,33 @@ export default function App() {
 
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+
+        <Route
+          path="/news"
+          element={
+            <ProtectedRoute>
+              <News />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/about-us"
+          element={
+            <ProtectedRoute>
+              <AboutUs />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/apis"
+          element={
+            <ProtectedRoute>
+              <Apis />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/change-password"
