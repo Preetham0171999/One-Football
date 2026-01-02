@@ -5,6 +5,8 @@ from typing import Any, Optional
 
 import time
 import urllib.request
+import urllib.parse
+import json
 import xml.etree.ElementTree as ET
 
 from logic.combined_predictor.predict import combine_predictions
@@ -282,6 +284,9 @@ def get_analysis(
 
 _NEWS_CACHE: dict[str, Any] = {"ts": 0.0, "data": None}
 
+_LEAGUES_CACHE: dict[str, Any] = {"ts": 0.0, "data": None}
+_STANDINGS_CACHE: dict[str, Any] = {}
+
 
 def _fetch_rss_headlines(url: str, limit: int = 20) -> list[dict[str, Any]]:
     req = urllib.request.Request(
@@ -317,6 +322,20 @@ def _fetch_rss_headlines(url: str, limit: int = 20) -> list[dict[str, Any]]:
     return items
 
 
+def _http_get_json(url: str, timeout: int = 8) -> Any:
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "One-Football/1.0 (+https://localhost)",
+            "Accept": "application/json",
+        },
+        method="GET",
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        raw = resp.read().decode("utf-8", errors="replace")
+    return json.loads(raw)
+
+
 @app.get("/news/latest")
 def latest_news(
     limit: int = 20,
@@ -343,6 +362,90 @@ def latest_news(
     _NEWS_CACHE["ts"] = now
     _NEWS_CACHE["data"] = data
     return {"source": data["source"], "items": data["items"], "cached": False}
+
+
+# ----------------------------
+# Leagues & standings (points table)
+# ----------------------------
+
+_STANDINGS_API_BASE = "https://api-football-standings.azharimm.site"
+
+
+@app.get("/leagues")
+def list_leagues(current_user: str = Depends(get_current_user)):
+    now = time.time()
+    if _LEAGUES_CACHE.get("data") is not None and (now - float(_LEAGUES_CACHE.get("ts") or 0)) < 3600:
+        return {"leagues": _LEAGUES_CACHE["data"], "cached": True}
+
+    try:
+        payload = _http_get_json(f"{_STANDINGS_API_BASE}/leagues")
+        data = (payload or {}).get("data") or {}
+        leagues = data.get("leagues") or []
+        out = [
+            {
+                "id": (l.get("id") or ""),
+                "name": (l.get("name") or ""),
+                "abbr": (l.get("abbr") or ""),
+            }
+            for l in leagues
+            if (l.get("id") and l.get("name"))
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Leagues fetch failed: {e}")
+
+    _LEAGUES_CACHE["ts"] = now
+    _LEAGUES_CACHE["data"] = out
+    return {"leagues": out, "cached": False}
+
+
+@app.get("/leagues/{league_id}/standings")
+def league_standings(
+    league_id: str,
+    season: int = int(time.gmtime().tm_year),
+    current_user: str = Depends(get_current_user),
+):
+    league_id = (league_id or "").strip()
+    if not league_id:
+        raise HTTPException(status_code=400, detail="league_id is required")
+
+    cache_key = f"{league_id}:{season}"
+    now = time.time()
+    cached = _STANDINGS_CACHE.get(cache_key)
+    if cached and (now - float(cached.get("ts") or 0)) < 600:
+        return {"leagueId": league_id, "season": season, "standings": cached.get("data", []), "cached": True}
+
+    try:
+        q = urllib.parse.urlencode({"season": int(season), "sort": "asc"})
+        payload = _http_get_json(f"{_STANDINGS_API_BASE}/leagues/{urllib.parse.quote(league_id)}/standings?{q}")
+        data = (payload or {}).get("data") or {}
+        standings = data.get("standings") or []
+
+        out = []
+        for row in standings:
+            team = (row.get("team") or {})
+            stats = row.get("stats") or []
+            stat_map = {s.get("name"): s.get("value") for s in stats if isinstance(s, dict)}
+
+            out.append(
+                {
+                    "rank": row.get("rank"),
+                    "teamId": team.get("id"),
+                    "teamName": team.get("name"),
+                    "played": stat_map.get("gamesPlayed"),
+                    "wins": stat_map.get("wins"),
+                    "draws": stat_map.get("ties"),
+                    "losses": stat_map.get("losses"),
+                    "goalDifference": stat_map.get("pointDifferential"),
+                    "points": stat_map.get("points"),
+                }
+            )
+
+        out = [r for r in out if r.get("teamName")]
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Standings fetch failed: {e}")
+
+    _STANDINGS_CACHE[cache_key] = {"ts": now, "data": out}
+    return {"leagueId": league_id, "season": int(season), "standings": out, "cached": False}
 
 
 

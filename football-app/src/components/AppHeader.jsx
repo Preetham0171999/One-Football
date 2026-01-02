@@ -57,6 +57,14 @@ export default function AppHeader() {
           >
             APIs
           </button>
+
+          <button
+            type="button"
+            className="app-header-title"
+            onClick={() => navigate("/leagues")}
+          >
+            Leagues
+          </button>
         </div>
 
         <div className="app-header-right" ref={menuRef}>

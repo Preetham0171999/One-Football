@@ -1,0 +1,91 @@
+.bg-panel.leagues-panel {
+  max-width: 1200px;
+  width: min(1200px, calc(100vw - 32px));
+  margin: 16px auto;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.leagues-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.btn-primary.leagues-refresh {
+  width: auto;
+  padding: 0.55rem 0.9rem;
+  font-size: 1rem;
+}
+
+.leagues-controls {
+  margin-bottom: 14px;
+}
+
+.leagues-label {
+  display: block;
+  margin-bottom: 8px;
+  opacity: 0.9;
+  font-weight: 700;
+}
+
+.leagues-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 1.05rem;
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+}
+
+.leagues-input::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.leagues-selected {
+  margin-top: 10px;
+  opacity: 0.9;
+}
+
+.leagues-error {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.leagues-muted {
+  opacity: 0.85;
+  padding: 12px;
+}
+
+.leagues-table-wrap {
+  margin-top: 10px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.40);
+  padding: 14px;
+  overflow-x: auto;
+}
+
+.leagues-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+.leagues-table th,
+.leagues-table td {
+  padding: 10px 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.leagues-table thead th {
+  position: sticky;
+  top: 0;
+  background: rgba(0, 0, 0, 0.55);
+}

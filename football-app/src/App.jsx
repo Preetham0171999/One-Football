@@ -15,6 +15,7 @@ import CompareAnalyses from "./pages/CompareAnalyses";
 import News from "./pages/News";
 import AboutUs from "./pages/AboutUs";
 import Apis from "./pages/Apis";
+import Leagues from "./pages/Leagues";
 import { Navigate } from "react-router-dom";
 
 export default function App() {
@@ -53,6 +54,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Apis />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/leagues"
+          element={
+            <ProtectedRoute>
+              <Leagues />
             </ProtectedRoute>
           }
         />
