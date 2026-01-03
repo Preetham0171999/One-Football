@@ -59,7 +59,8 @@ A web-based football analytics platform that allows users to view team details, 
 
 3.Page to explore team details.
 
-<img width="1918" height="988" alt="image" src="https://github.com/user-attachments/assets/7d5cd92b-49f7-40be-a4b6-f2f1a2c13086" />
+<img width="1916" height="976" alt="image" src="https://github.com/user-attachments/assets/7725a081-6fa5-46cc-9573-68303d7f57f9" />
+
 
 
 
