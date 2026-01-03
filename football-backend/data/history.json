@@ -1,9 +1,0 @@
-{
-  "barcelona": [
-    { "category": "Domestic League", "honour": "La Liga", "total_wins": 28 },
-    { "category": "Domestic Cup", "honour": "Copa del Rey (Spanish Cup)", "total_wins": "32 (A Spanish record)" },
-    { "category": "Continental Title", "honour": "UEFA Champions League / European Cup", "total_wins": 5 },
-    { "category": "Total Major Trophies", "honour": "Domestic & International", "total_wins": "~80+" },
-    { "category": "Current Head Coach", "honour": "Hansi Flick (German)", "total_wins": "Joined in May 2024" }
-  ]
-}

@@ -450,4 +450,65 @@ def league_standings(
 
 
 
+class Solution(object):
+    def convert(self, s, numRows):
+        
+        if numRows==1 or len(s)<numRows:
+            return s
+        
+        
+        
+        
+        rows=[""]*numRows
+        
+        direction =1
+        current_row=0
+        
+        for ch in s:
+            rows[current_row]+= ch
+            
+            
+            if current_row==0:
+                direction = 1
+            elif current_row == numRows-1:
+                direction = -1
+                
+                
+            current_row += direction
+            
+            
+        return "".join(rows)
+                
+                
+            
+        
+
+                
+            
+        
+    
+       
+                
+        
+    
+        
+            
+                    
+                    
+        
+                    
+                    
+                    
+                
+                
+            
+            
+        
+        
+        
+            
+            
+        
+      
+
 
