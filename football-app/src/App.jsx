@@ -29,7 +29,14 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
 
         <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/news"
@@ -41,10 +48,10 @@ export default function App() {
         />
 
         <Route
-          path="/about-us"
+          path="/leagues"
           element={
             <ProtectedRoute>
-              <AboutUs />
+              <Leagues />
             </ProtectedRoute>
           }
         />
@@ -59,10 +66,10 @@ export default function App() {
         />
 
         <Route
-          path="/leagues"
+          path="/about-us"
           element={
             <ProtectedRoute>
-              <Leagues />
+              <AboutUs />
             </ProtectedRoute>
           }
         />

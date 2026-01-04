@@ -54,8 +54,7 @@ export default function Leagues() {
     setIsLoadingTable(true);
     setError("");
     try {
-      const season = new Date().getFullYear();
-      const res = await authFetch(`/leagues/${encodeURIComponent(leagueId)}/standings?season=${season}`);
+      const res = await authFetch(`/leagues/${encodeURIComponent(leagueId)}/standings`);
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setTable(data.standings || []);

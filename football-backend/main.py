@@ -368,34 +368,43 @@ def latest_news(
 # Leagues & standings (points table)
 # ----------------------------
 
-_STANDINGS_API_BASE = "https://api-football-standings.azharimm.site"
+# NOTE: Previous provider (api-football-standings.azharimm.site) is no longer
+# serving JSON. Using ESPN's public JSON endpoints instead.
+_ESPN_SOCCER_API_BASE = "https://site.web.api.espn.com/apis/v2/sports/soccer"
+
+# Minimal, stable league list for the dropdown.
+# IDs are ESPN soccer league codes used in URLs.
+_LEAGUE_CATALOG = [
+    {"id": "eng.1", "name": "Premier League", "abbr": "EPL"},
+    {"id": "esp.1", "name": "LaLiga", "abbr": "LALIGA"},
+    {"id": "ita.1", "name": "Serie A", "abbr": "SA"},
+    {"id": "ger.1", "name": "Bundesliga", "abbr": "BUN"},
+    {"id": "fra.1", "name": "Ligue 1", "abbr": "L1"},
+    {"id": "uefa.champions", "name": "UEFA Champions League", "abbr": "UCL"},
+    {"id": "uefa.europa", "name": "UEFA Europa League", "abbr": "UEL"},
+    {"id": "usa.1", "name": "MLS", "abbr": "MLS"},
+]
+
+
+def _espn_standings_url(league_id: str) -> str:
+    return f"{_ESPN_SOCCER_API_BASE}/{urllib.parse.quote(league_id)}/standings"
+
+
+def _extract_stat(stat_map: dict[str, Any], *names: str, default: Any = None) -> Any:
+    for n in names:
+        if n in stat_map:
+            return stat_map.get(n)
+    return default
 
 
 @app.get("/leagues")
 def list_leagues(current_user: str = Depends(get_current_user)):
+    # Catalog is static; keep existing cache structure for compatibility.
     now = time.time()
-    if _LEAGUES_CACHE.get("data") is not None and (now - float(_LEAGUES_CACHE.get("ts") or 0)) < 3600:
-        return {"leagues": _LEAGUES_CACHE["data"], "cached": True}
-
-    try:
-        payload = _http_get_json(f"{_STANDINGS_API_BASE}/leagues")
-        data = (payload or {}).get("data") or {}
-        leagues = data.get("leagues") or []
-        out = [
-            {
-                "id": (l.get("id") or ""),
-                "name": (l.get("name") or ""),
-                "abbr": (l.get("abbr") or ""),
-            }
-            for l in leagues
-            if (l.get("id") and l.get("name"))
-        ]
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Leagues fetch failed: {e}")
-
-    _LEAGUES_CACHE["ts"] = now
-    _LEAGUES_CACHE["data"] = out
-    return {"leagues": out, "cached": False}
+    if _LEAGUES_CACHE.get("data") is None:
+        _LEAGUES_CACHE["ts"] = now
+        _LEAGUES_CACHE["data"] = _LEAGUE_CATALOG
+    return {"leagues": _LEAGUES_CACHE["data"], "cached": True}
 
 
 @app.get("/leagues/{league_id}/standings")
@@ -408,35 +417,38 @@ def league_standings(
     if not league_id:
         raise HTTPException(status_code=400, detail="league_id is required")
 
-    cache_key = f"{league_id}:{season}"
+    # ESPN endpoint serves current standings without requiring a season.
+    # Keep the season parameter for frontend compatibility, but do not use it.
+    cache_key = f"{league_id}:current"
     now = time.time()
     cached = _STANDINGS_CACHE.get(cache_key)
     if cached and (now - float(cached.get("ts") or 0)) < 600:
         return {"leagueId": league_id, "season": season, "standings": cached.get("data", []), "cached": True}
 
     try:
-        q = urllib.parse.urlencode({"season": int(season), "sort": "asc"})
-        payload = _http_get_json(f"{_STANDINGS_API_BASE}/leagues/{urllib.parse.quote(league_id)}/standings?{q}")
-        data = (payload or {}).get("data") or {}
-        standings = data.get("standings") or []
+        payload = _http_get_json(_espn_standings_url(league_id))
+        children = (payload or {}).get("children") or []
+        if not children:
+            raise ValueError("No standings data")
 
+        standings = ((children[0] or {}).get("standings") or {}).get("entries") or []
         out = []
-        for row in standings:
-            team = (row.get("team") or {})
-            stats = row.get("stats") or []
+        for idx, entry in enumerate(standings, start=1):
+            team = (entry or {}).get("team") or {}
+            stats = (entry or {}).get("stats") or []
             stat_map = {s.get("name"): s.get("value") for s in stats if isinstance(s, dict)}
 
             out.append(
                 {
-                    "rank": row.get("rank"),
+                    "rank": _extract_stat(stat_map, "rank", default=idx),
                     "teamId": team.get("id"),
-                    "teamName": team.get("name"),
-                    "played": stat_map.get("gamesPlayed"),
-                    "wins": stat_map.get("wins"),
-                    "draws": stat_map.get("ties"),
-                    "losses": stat_map.get("losses"),
-                    "goalDifference": stat_map.get("pointDifferential"),
-                    "points": stat_map.get("points"),
+                    "teamName": team.get("displayName") or team.get("name"),
+                    "played": _extract_stat(stat_map, "gamesPlayed", "games", default=None),
+                    "wins": _extract_stat(stat_map, "wins", default=None),
+                    "draws": _extract_stat(stat_map, "ties", "draws", default=None),
+                    "losses": _extract_stat(stat_map, "losses", default=None),
+                    "goalDifference": _extract_stat(stat_map, "pointDifferential", "goalDifference", default=None),
+                    "points": _extract_stat(stat_map, "points", default=None),
                 }
             )
 
@@ -485,7 +497,21 @@ class Solution(object):
 
                 
             
+            
+
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+            
+            
+
     
        
                 
