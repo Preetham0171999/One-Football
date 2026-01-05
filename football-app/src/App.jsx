@@ -16,6 +16,7 @@ import News from "./pages/News";
 import AboutUs from "./pages/AboutUs";
 import Apis from "./pages/Apis";
 import Leagues from "./pages/Leagues";
+import Strategies from "./pages/Strategies";
 import { Navigate } from "react-router-dom";
 
 export default function App() {
@@ -52,6 +53,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Leagues />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/strategies"
+          element={
+            <ProtectedRoute>
+              <Strategies />
             </ProtectedRoute>
           }
         />

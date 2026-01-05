@@ -1,0 +1,6 @@
+/* Dashboard-only sizing override for the shared panel */
+.bg-panel.dashboard-panel {
+  max-width: 900px;
+  width: min(900px, calc(100vw - 32px));
+  box-sizing: border-box;
+}

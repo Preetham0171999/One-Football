@@ -2,13 +2,14 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/auth.css";
 import "./StaticPanel.css";
+import "./Dashboard.css";
 
 export default function Dashboard() {
   const navigate = useNavigate();
 
   return (
     <div className="auth-page">
-      <div className="bg-panel no-bg static-panel">
+      <div className="bg-panel no-bg static-panel dashboard-panel">
         <h2 style={{ textAlign: "center" }}>Welcome to OneFootball Arena</h2>
         <p style={{ textAlign: "center", color: "#ddd", marginTop: 6 }}>
           Where tactics are forged, legends are built, and matches are won before
@@ -31,6 +32,9 @@ export default function Dashboard() {
           </button>
           <button className="btn-primary" onClick={() => navigate("/build-match")}>
             Simulate Matchday
+          </button>
+          <button className="btn-primary" onClick={() => navigate("/strategies")}>
+            Strategies
           </button>
         </div>
       </div>

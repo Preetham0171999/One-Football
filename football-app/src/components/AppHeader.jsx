@@ -37,17 +37,17 @@ export default function AppHeader() {
           <button
             type="button"
             className="app-header-title"
-            onClick={() => navigate("/news")}
+            onClick={() => navigate("/leagues")}
           >
-            News
+            Leagues
           </button>
 
           <button
             type="button"
             className="app-header-title"
-            onClick={() => navigate("/about-us")}
+            onClick={() => navigate("/news")}
           >
-            About Us
+            News
           </button>
 
           <button
@@ -61,9 +61,9 @@ export default function AppHeader() {
           <button
             type="button"
             className="app-header-title"
-            onClick={() => navigate("/leagues")}
+            onClick={() => navigate("/about-us")}
           >
-            Leagues
+            About Us
           </button>
         </div>
 
