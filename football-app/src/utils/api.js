@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8000";
+export const BASE_URL = "http://127.0.0.1:8000";
 
 import { getToken, logout } from "./auth";
 
@@ -41,4 +41,15 @@ export async function authFetch(url, options = {}) {
     throw new Error("Unauthorized");
   }
   return res;
+}
+
+export async function chat(message) {
+  const res = await fetch(`${BASE_URL}/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message }),
+  });
+
+  if (!res.ok) throw new Error("Chat failed");
+  return res.json();
 }

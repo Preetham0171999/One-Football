@@ -1,0 +1,29 @@
+{
+  "default": "I can help with football basics (formations, pressing, counters) or how to use this app (Team Selector, Build Team, Build Match). Try asking: 'How do I predict a match?' or 'Which formation fits a counter-attacking team?'",
+  "intents": [
+    {
+      "any": ["how to", "help", "use the app", "app", "website", "pages", "feature"],
+      "reply": "You can use this app to build teams, compare analyses, and simulate matches. Try: Dashboard for navigation, Team Selector to browse teams/players, Build Team to create a lineup, and Build Match to compare two teams/formations."
+    },
+    {
+      "any": ["build match", "predict", "winner"],
+      "reply": "To predict a match: open Build Match, pick Team A and Team B, choose formations, set playing XI and ratings, then run prediction. The backend combines multiple models to estimate a winner."
+    },
+    {
+      "any": ["build team", "lineup", "formation", "pitch"],
+      "reply": "For lineups: choose a formation (e.g., 4-3-3, 4-2-3-1), then assign players to positions on the pitch. Balanced teams usually mix strong defense, midfield control, and pace up front."
+    },
+    {
+      "any": ["best formation", "which formation"],
+      "reply": "There isn't one best formation. 4-3-3 helps pressing and wide attacks, 4-2-3-1 is balanced, and 3-5-2 can dominate midfield if your wing-backs are strong. The best choice depends on your players."
+    },
+    {
+      "any": ["press", "pressing", "high press"],
+      "reply": "High pressing works best with a compact team, fast defenders, and hard-working forwards. If you get bypassed often, drop the line slightly and keep midfielders closer together."
+    },
+    {
+      "any": ["counter", "counter attack", "counter-attack"],
+      "reply": "Counter-attacks usually work best with quick forwards, direct passing, and a compact defensive block. Win the ball, play forward early, and attack space behind the defense."
+    }
+  ]
+}

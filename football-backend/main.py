@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Any, Optional
 
+import os
 import time
 import urllib.request
 import urllib.parse
@@ -64,6 +65,90 @@ class Match(BaseModel):
     right_playing_11: dict
     left_rating: float
     right_rating: float
+
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+_CHAT_KB_CACHE: dict[str, Any] = {"ts": 0.0, "path": None, "data": None}
+
+
+def _load_chat_kb() -> dict[str, Any]:
+    """Load canned chat responses from JSON.
+
+    Format:
+      {
+        "default": "...",
+        "intents": [
+          {"any": ["kw1", "kw2"], "reply": "..."},
+          {"all": ["kw1", "kw2"], "reply": "..."}
+        ]
+      }
+    """
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    kb_path = os.getenv("CHAT_KB_PATH") or os.path.join(base_dir, "chat_knowledge.json")
+
+    now = time.time()
+    cached = _CHAT_KB_CACHE
+    if cached.get("data") is not None and cached.get("path") == kb_path and (now - float(cached.get("ts") or 0)) < 5:
+        return cached["data"]
+
+    try:
+        with open(kb_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            raise ValueError("chat KB must be a JSON object")
+        if "intents" in data and not isinstance(data.get("intents"), list):
+            raise ValueError("chat KB intents must be a list")
+    except Exception:
+        data = {}
+
+    _CHAT_KB_CACHE["ts"] = now
+    _CHAT_KB_CACHE["path"] = kb_path
+    _CHAT_KB_CACHE["data"] = data
+    return data
+
+
+def _chat_reply(message: str) -> str:
+    text = (message or "").strip().lower()
+    if not text:
+        return "Ask a question about football or how to use the app."
+
+    kb = _load_chat_kb()
+    intents = kb.get("intents") if isinstance(kb, dict) else None
+    if isinstance(intents, list):
+        for intent in intents:
+            if not isinstance(intent, dict):
+                continue
+
+            any_keywords = intent.get("any")
+            all_keywords = intent.get("all")
+
+            matched = False
+            if isinstance(any_keywords, list) and any_keywords:
+                matched = any((str(k).lower() in text) for k in any_keywords)
+            elif isinstance(all_keywords, list) and all_keywords:
+                matched = all((str(k).lower() in text) for k in all_keywords)
+
+            if matched:
+                reply = intent.get("reply")
+                if isinstance(reply, str) and reply.strip():
+                    return reply.strip()
+
+    default_reply = kb.get("default") if isinstance(kb, dict) else None
+    if isinstance(default_reply, str) and default_reply.strip():
+        return default_reply.strip()
+
+    return (
+        "I can help with football basics (formations, pressing, counters) or how to use this app (Team Selector, Build Team, Build Match). "
+        "Try asking: 'How do I predict a match?' or 'Which formation fits a counter-attacking team?'"
+    )
+
+
+@app.post("/chat")
+def chat_endpoint(payload: ChatRequest):
+    return {"reply": _chat_reply(payload.message)}
 
 
 
@@ -458,6 +543,21 @@ def league_standings(
 
     _STANDINGS_CACHE[cache_key] = {"ts": now, "data": out}
     return {"leagueId": league_id, "season": int(season), "standings": out, "cached": False}
+
+
+
+
+
+        
+        
+       
+                    
+                    
+                    
+        
+        
+                     
+                    
 
 
 
