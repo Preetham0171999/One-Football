@@ -225,6 +225,102 @@ def get_players(team_name: str, db: Session = Depends(get_db), current_user: str
     }
 
 
+# ----------------------------
+# Team schedule (external API)
+# ----------------------------
+
+_TEAM_ID_MAP = {
+    # football-data.org team IDs
+    # Keys are normalized team names (lowercase, no spaces/underscores).
+    "arsenal": 57,
+    "barcelona": 81,
+    "bayernmunich": 5,
+    "juventus": 109,
+    "liverpool": 64,
+    "manchesterunited": 66,
+    "psg": 524,
+    "realmadrid": 86,
+}
+
+
+def _normalize_team_key(team_name: str) -> str:
+    return "".join(ch for ch in (team_name or "").strip().lower() if ch.isalnum())
+
+
+@app.get("/schedule/{team_name}")
+def get_schedule(team_name: str, current_user: str = Depends(get_current_user)):
+    token = os.getenv("FOOTBALL_DATA_TOKEN")
+    if not token:
+        raise HTTPException(
+            status_code=501,
+            detail="FOOTBALL_DATA_TOKEN is not set on the backend",
+        )
+
+    key = _normalize_team_key(team_name)
+    team_id = _TEAM_ID_MAP.get(key)
+    if not team_id:
+        raise HTTPException(status_code=404, detail="Team not supported for schedules")
+
+    base_url = "https://api.football-data.org/v4"
+    params = urllib.parse.urlencode({"status": "SCHEDULED", "limit": 10})
+    url = f"{base_url}/teams/{team_id}/matches?{params}"
+
+    req = urllib.request.Request(url, headers={"X-Auth-Token": token})
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        # Bubble up API errors in a user-friendly way.
+        try:
+            detail = e.read().decode("utf-8")
+        except Exception:
+            detail = str(e)
+        raise HTTPException(status_code=502, detail=f"Schedule provider error: {detail}")
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Schedule provider error: {str(e)}")
+
+    matches = payload.get("matches") if isinstance(payload, dict) else None
+    if not isinstance(matches, list):
+        matches = []
+
+    fixtures = []
+    for m in matches:
+        if not isinstance(m, dict):
+            continue
+        utc_date = m.get("utcDate")
+        date_only = (utc_date or "").split("T")[0] if isinstance(utc_date, str) else None
+
+        competition = None
+        comp = m.get("competition")
+        if isinstance(comp, dict):
+            competition = comp.get("name")
+
+        home = m.get("homeTeam") if isinstance(m.get("homeTeam"), dict) else {}
+        away = m.get("awayTeam") if isinstance(m.get("awayTeam"), dict) else {}
+        home_name = home.get("name")
+        away_name = away.get("name")
+
+        opponent = None
+        if home.get("id") == team_id:
+            opponent = away_name
+        elif away.get("id") == team_id:
+            opponent = home_name
+        else:
+            opponent = away_name or home_name
+
+        fixtures.append(
+            {
+                "date": date_only,
+                "opponent": opponent,
+                "competition": competition,
+                "homeTeam": home_name,
+                "awayTeam": away_name,
+            }
+        )
+
+    return {"team": team_name, "fixtures": fixtures}
+
+
 
 from database.models import ClubMetric
 
@@ -549,8 +645,60 @@ def league_standings(
 
 
         
+
         
+        
+            
+            
+            
+            
+            
+            
+            
+            
+        
+        
+
+                
+                
+                
+        
+        
+        
+
+                
+                 
+        
+        
+        
+        
+        
+        
+
+
+                
+            
+            
+        
+        
+        
+        
+        
+        
+        
+
        
+       
+                
+            
+            
+                
+                
+                
+                    
+
+                    
+        
                     
                     
                     

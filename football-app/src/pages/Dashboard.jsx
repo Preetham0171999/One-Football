@@ -16,26 +16,30 @@ export default function Dashboard() {
           kickoff.
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            gap: 12,
-            marginTop: 20,
-            justifyContent: "center",
-          }}
-        >
-          <button className="btn-primary" onClick={() => navigate("/team")}>
-            Explore Teams
-          </button>
-          <button className="btn-primary" onClick={() => navigate("/build-team")}>
-            Craft Your XI
-          </button>
-          <button className="btn-primary" onClick={() => navigate("/build-match")}>
-            Simulate Matchday
-          </button>
-          <button className="btn-primary" onClick={() => navigate("/strategies")}>
-            Strategies
-          </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 20 }}>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+            <button className="btn-primary" onClick={() => navigate("/team")}>
+              Explore Teams
+            </button>
+            <button className="btn-primary" onClick={() => navigate("/build-team")}>
+              Craft Your XI
+            </button>
+            <button className="btn-primary" onClick={() => navigate("/build-match")}>
+              Simulate Matchday
+            </button>
+            <button className="btn-primary" onClick={() => navigate("/strategies")}>
+              Strategies
+            </button>
+          </div>
+
+          <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+            <button className="btn-primary" onClick={() => navigate("/schedule")}>
+              Schedule
+            </button>
+            <button className="btn-primary" onClick={() => navigate("/live-scores")}>
+              Live Scores
+            </button>
+          </div>
         </div>
       </div>
     </div>

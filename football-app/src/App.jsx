@@ -17,6 +17,8 @@ import AboutUs from "./pages/AboutUs";
 import Apis from "./pages/Apis";
 import Leagues from "./pages/Leagues";
 import Strategies from "./pages/Strategies";
+import Schedule from "./pages/Schedule";
+import LiveScores from "./pages/LiveScores";
 import { Navigate } from "react-router-dom";
 
 export default function App() {
@@ -123,6 +125,24 @@ export default function App() {
           element={
             <ProtectedRoute>
               <CompareAnalyses />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/schedule"
+          element={
+            <ProtectedRoute>
+              <Schedule />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/live-scores"
+          element={
+            <ProtectedRoute>
+              <LiveScores />
             </ProtectedRoute>
           }
         />
