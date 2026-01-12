@@ -101,6 +101,18 @@ export default function AppHeader() {
                 role="menuitem"
                 onClick={() => {
                   setOpen(false);
+                  navigate("/favourites");
+                }}
+              >
+                Favourites
+              </button>
+
+              <button
+                type="button"
+                className="profile-dropdown-item"
+                role="menuitem"
+                onClick={() => {
+                  setOpen(false);
                   handleLogout();
                 }}
               >

@@ -19,6 +19,7 @@ import Leagues from "./pages/Leagues";
 import Strategies from "./pages/Strategies";
 import Schedule from "./pages/Schedule";
 import LiveScores from "./pages/LiveScores";
+import Favourites from "./pages/Favourites";
 import { Navigate } from "react-router-dom";
 
 export default function App() {
@@ -91,6 +92,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ChangePassword />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/favourites"
+          element={
+            <ProtectedRoute>
+              <Favourites />
             </ProtectedRoute>
           }
         />

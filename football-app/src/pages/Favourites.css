@@ -1,0 +1,151 @@
+.favourites-page {
+  min-height: calc(100vh - 64px);
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+
+.bg-panel.favourites-panel {
+  max-width: 900px;
+  width: min(900px, calc(100vw - 32px));
+  margin: 0;
+}
+
+.favourites-header h2 {
+  margin: 0;
+  text-align: center;
+}
+
+.favourites-subtitle {
+  margin: 8px 0 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.favourites-section {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.favourites-section-title {
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.favourites-empty {
+  color: rgba(255, 255, 255, 0.75);
+  padding: 10px 0;
+}
+
+.favourites-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.favourites-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.favourites-chip-name {
+  font-weight: 700;
+}
+
+.favourites-chip-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.favourites-chip-btn {
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+.favourites-chip-remove {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 0;
+}
+
+.favourites-chip-remove:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.favourites-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.favourites-search {
+  flex: 1;
+  min-width: 220px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  outline: none;
+}
+
+.favourites-search::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.favourites-muted {
+  color: rgba(255, 255, 255, 0.75);
+  padding: 12px 0;
+}
+
+.favourites-error {
+  color: #ffb4ab;
+  padding: 12px 0;
+}
+
+.favourites-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.favourites-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+
+.favourites-row:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.favourites-row input {
+  width: 16px;
+  height: 16px;
+}
+
+.favourites-row-name {
+  font-weight: 650;
+}

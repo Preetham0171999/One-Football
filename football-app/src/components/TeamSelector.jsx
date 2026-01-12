@@ -7,6 +7,7 @@ import BackButton from "./BackButton";
 
 export default function TeamSelector() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const goToBuilder = () => {
     navigate("/build-team");
@@ -25,6 +26,12 @@ export default function TeamSelector() {
   const [history, setHistory] = useState([]);
 
   const [teamInfo, setTeamInfo] = useState({});
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const teamFromUrl = params.get("team");
+    if (teamFromUrl) setSelectedTeam(teamFromUrl);
+  }, [location.search]);
 
   useEffect(() => {
     // Redirect to login if not authenticated
