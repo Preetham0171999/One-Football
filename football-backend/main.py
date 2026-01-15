@@ -193,18 +193,149 @@ def get_db():
         
         
         
-from database.models import Team
+from database.models import Team, CustomTeam
 from auth.security import get_current_user
+
+
+class CustomPlayerIn(BaseModel):
+    name: str
+    position: str
+    rating: Optional[int] = None
+
+
+class CustomTeamCreate(BaseModel):
+    name: str
+    players: list[CustomPlayerIn]
+
+
+def _normalize_team_name(name: str) -> str:
+    return " ".join((name or "").strip().split())
+
+
+def _normalize_player_name(name: str) -> str:
+    return " ".join((name or "").strip().split())
+
+
+def _normalize_position(pos: str) -> str:
+    p = (pos or "").strip().lower()
+    if p in {"gk", "keeper", "goalie"}:
+        return "Goalkeeper"
+    if p in {"cb", "lb", "rb", "lwb", "rwb", "def", "defender"}:
+        return "Defender"
+    if p in {"cm", "cdm", "cam", "lm", "rm", "mid", "midfielder"}:
+        return "Midfielder"
+    if p in {"st", "cf", "lw", "rw", "fw", "forward", "striker"}:
+        return "Forward"
+
+    # Keep as-is but title-case so UI looks consistent.
+    return (pos or "").strip().title()
+
+
+@app.get("/custom-teams")
+def list_custom_teams(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    rows = (
+        db.query(CustomTeam)
+        .filter(CustomTeam.owner_email == current_user)
+        .order_by(CustomTeam.created_at.desc())
+        .all()
+    )
+    return {
+        "teams": [r.name for r in rows],
+    }
+
+
+@app.post("/custom-teams")
+def create_custom_team(
+    payload: CustomTeamCreate,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    team_name = _normalize_team_name(payload.name)
+    if not team_name:
+        raise HTTPException(status_code=400, detail="Team name is required")
+
+    players_in = payload.players or []
+    if len(players_in) != 11:
+        raise HTTPException(status_code=400, detail="You must provide exactly 11 players")
+
+    normalized_players: list[dict[str, Any]] = []
+    seen_names: set[str] = set()
+    for p in players_in:
+        pname = _normalize_player_name(p.name)
+        if not pname:
+            raise HTTPException(status_code=400, detail="Player name is required")
+
+        key = pname.lower()
+        if key in seen_names:
+            raise HTTPException(status_code=400, detail=f"Duplicate player name: {pname}")
+        seen_names.add(key)
+
+        position = _normalize_position(p.position)
+        rating_val: Optional[int] = None
+        if p.rating is not None:
+            try:
+                rating_val = int(p.rating)
+            except Exception:
+                raise HTTPException(status_code=400, detail=f"Invalid rating for {pname}")
+            if rating_val < 1 or rating_val > 99:
+                raise HTTPException(status_code=400, detail=f"Rating must be 1-99 for {pname}")
+
+        normalized_players.append(
+            {
+                "name": pname,
+                "position": position,
+                "rating": rating_val if rating_val is not None else 70,
+            }
+        )
+
+    existing = (
+        db.query(CustomTeam)
+        .filter(CustomTeam.owner_email == current_user, CustomTeam.name == team_name)
+        .first()
+    )
+    if existing:
+        raise HTTPException(status_code=400, detail="You already created a team with this name")
+
+    row = CustomTeam(owner_email=current_user, name=team_name, players=normalized_players)
+    db.add(row)
+    try:
+        db.commit()
+        db.refresh(row)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "Custom team created", "team": row.name}
 
 
 @app.get("/teams")
 def get_teams(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
-    teams = db.query(Team).all()
-    return {"teams": [t.name for t in teams]}
+    teams = [t.name for t in db.query(Team).all()]
+    custom_teams = [
+        t.name
+        for t in db.query(CustomTeam)
+        .filter(CustomTeam.owner_email == current_user)
+        .all()
+    ]
+
+    merged = sorted(set(teams + custom_teams), key=lambda s: str(s).lower())
+    return {"teams": merged}
 
 
 @app.get("/logo/{team_name}")
 def get_logo(team_name: str, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+    # Custom teams don't have official logos
+    custom = (
+        db.query(CustomTeam)
+        .filter(CustomTeam.owner_email == current_user, CustomTeam.name == team_name)
+        .first()
+    )
+    if custom:
+        return {"team": team_name, "logo": None}
+
     team = db.query(Team).filter(Team.name == team_name).first()
     return {"team": team_name, "logo": team.logo if team else None}
 
@@ -212,6 +343,15 @@ from database.models import Player
 
 @app.get("/players/{team_name}")
 def get_players(team_name: str, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+    custom = (
+        db.query(CustomTeam)
+        .filter(CustomTeam.owner_email == current_user, CustomTeam.name == team_name)
+        .first()
+    )
+    if custom:
+        players = custom.players if isinstance(custom.players, list) else []
+        return {"team": team_name, "players": players}
+
     players = db.query(Player).filter(Player.team == team_name).all()
     return {
         "team": team_name,

@@ -182,6 +182,172 @@ body {
   color: black;
 }
 
+/* TeamSelector: title row + Add Team button */
+.team-selector-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.add-team-button {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+  color: white;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.add-team-button:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  z-index: 999;
+}
+
+.modal-card {
+  width: min(980px, 100%);
+  max-height: 85vh;
+  overflow: auto;
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(20, 20, 28, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.modal-close {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.modal-body {
+  margin-top: 12px;
+}
+
+.modal-label {
+  display: grid;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.modal-input,
+.modal-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  outline: none;
+  background: rgba(255, 255, 255, 0.10);
+  color: white;
+}
+
+.modal-select option {
+  color: black;
+}
+
+.modal-subtitle {
+  margin-top: 14px;
+  margin-bottom: 10px;
+  font-weight: 900;
+}
+
+.custom-team-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.custom-player-row {
+  display: grid;
+  grid-template-columns: 44px 1.3fr 1fr 0.8fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.custom-player-index {
+  width: 44px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 0, 0, 0.12);
+  border: 1px solid rgba(255, 0, 0, 0.20);
+  color: #ffd0d0;
+  font-weight: 700;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.modal-primary,
+.modal-secondary {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.modal-primary {
+  color: #0a0a0f;
+  background: #ffd700;
+}
+
+.modal-secondary {
+  color: white;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.modal-primary:disabled,
+.modal-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 720px) {
+  .custom-player-row {
+    grid-template-columns: 44px 1fr;
+  }
+}
+
 /* Team info layout */
 .team-info {
   display: flex;

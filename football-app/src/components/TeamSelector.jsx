@@ -1,21 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { isAuthenticated, getToken } from "../utils/auth";
+import { isAuthenticated } from "../utils/auth";
 import { authFetch } from "../utils/api";
-import BackButton from "./BackButton";
 
 export default function TeamSelector() {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const goToBuilder = () => {
-    navigate("/build-team");
-  };
-
-    const goToMatchBuilder = () => {
-    navigate("/build-match");
-  };
 
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState("");
@@ -25,7 +16,15 @@ export default function TeamSelector() {
   const [metrics, setMetrics] = useState([]);
   const [history, setHistory] = useState([]);
 
-  const [teamInfo, setTeamInfo] = useState({});
+  const fetchTeams = async () => {
+    try {
+      const res = await authFetch(`/teams`);
+      const data = await res.json();
+      setTeams(Array.isArray(data.teams) ? data.teams : []);
+    } catch (err) {
+      console.error("teams fetch error:", err);
+    }
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -34,20 +33,11 @@ export default function TeamSelector() {
   }, [location.search]);
 
   useEffect(() => {
-    // Redirect to login if not authenticated
     if (!isAuthenticated()) {
       navigate("/login");
       return;
     }
-
-    if (!selectedTeam) return;
-
-    const token = getToken();
-    authFetch(`/team-info/${selectedTeam}`)
-      .then((res) => res.json())
-      .then((data) => setTeamInfo(data))
-      .catch((err) => console.error("team-info error:", err));
-  }, [selectedTeam]);
+  }, [navigate]);
 
   useEffect(() => {
     // Reset selected player whenever team changes
@@ -57,21 +47,9 @@ export default function TeamSelector() {
   
 
   useEffect(() => {
-    if (!selectedTeam) return;
-
-    fetch(`http://localhost:8000/team-info/${selectedTeam}`)
-      .then((res) => res.json())
-      .then((data) => setTeamInfo(data));
-  }, [selectedTeam]);
-
-  useEffect(() => {
     if (!isAuthenticated()) return;
 
-    const token = getToken();
-    authFetch(`/teams`)
-      .then((res) => res.json())
-      .then((data) => setTeams(data.teams))
-      .catch((err) => console.error("teams fetch error:", err));
+    fetchTeams();
   }, []);
 
   useEffect(() => {
@@ -80,7 +58,6 @@ export default function TeamSelector() {
     const fetchData = async () => {
       try {
         // Fetch players
-        const token = getToken();
         const playersRes = await authFetch(`/players/${selectedTeam}`);
         const playersData = await playersRes.json();
         setPlayers(playersData.players);
@@ -148,7 +125,20 @@ export default function TeamSelector() {
       {/* CENTER COLUMN */}
       <div className="team-selector-center">
         <div className="selector-container">
-          <h2>Select your football team ⚽</h2>
+          <div className="team-selector-title-row">
+            <h2>Select your football team ⚽</h2>
+            <button
+              type="button"
+              className="add-team-button"
+              onClick={() => {
+                navigate("/add-team", {
+                  state: { from: location.pathname + location.search },
+                });
+              }}
+            >
+              + Add Team
+            </button>
+          </div>
 
           <select
             value={selectedTeam}

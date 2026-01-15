@@ -6,6 +6,7 @@ import TeamSelector from "./components/TeamSelector";
 import TeamBuilder from "./components/TeamBuilder";
 import BuildMatch from "./components/BuildMatch/BuildMatch";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import AddTeam from "./pages/AddTeam";
 
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
@@ -110,6 +111,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <TeamSelector />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/add-team"
+          element={
+            <ProtectedRoute>
+              <AddTeam />
             </ProtectedRoute>
           }
         />

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, JSON, DateTime
+from sqlalchemy import Column, Integer, String, JSON, DateTime, UniqueConstraint
 from sqlalchemy.sql import func
 from .db import Base
 
@@ -60,6 +60,23 @@ class Analysis(Base):
     subs = Column(JSON)
     free_positions = Column(JSON)
     arrows = Column(JSON)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+class CustomTeam(Base):
+    __tablename__ = "custom_teams"
+
+    __table_args__ = (
+        UniqueConstraint("owner_email", "name", name="uq_custom_team_owner_name"),
+    )
+
+    id = Column(Integer, primary_key=True)
+    owner_email = Column(String, index=True, nullable=False)
+    name = Column(String, index=True, nullable=False)
+
+    # Stored as a list of player dicts: [{name, position, rating}, ...]
+    players = Column(JSON, nullable=False)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
